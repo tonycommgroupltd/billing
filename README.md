@@ -4,9 +4,9 @@ Clean source code for the Tonycomm ISP stack - billing, customers, tickets, mobi
 
 **Repository:** https://github.com/tonycommgroupltd/billing  
 
-Built and maintained by **Jram Tech** (Tonycomm Group LTD).
+Built and maintained by (Tonycomm Group LTD).
 
-Secrets stay in local env files. Never commit real passwords, API keys, or `.env` files.
+
 
 ---
 
@@ -65,7 +65,7 @@ tr069-api/      TR-069 / ACS helper API
 olt-api/        OLT monitoring API
 ```
 
-Older clones used `app-portal` / `app-api`. Those folders are replaced by `frontend` / `mobile-api` (same products, cleaner names).
+
 
 ---
 
@@ -219,14 +219,14 @@ Change one package at a time, commit with a clear message, and test against a no
 
 ## Support & credit
 
-**Maintainer:** Jram Tech - Tonycomm Group LTD
+**Maintainer:** - Tonycomm Group LTD
 
 Repo: https://github.com/tonycommgroupltd/billing
 
-Keep attribution to **Jram Tech** / Tonycomm Group. Do not republish with live credentials or customer data.
+Keep attribution to  Tonycomm Group. Do not republish with live credentials or customer data.
 
 If something is unclear when you clone, ask - better a short question than guessing production env values.
 
 ---
 
-*Tonycomm Billing - clean source by Jram Tech*
+*Tonycomm Billing 
