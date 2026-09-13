@@ -1,0 +1,189 @@
+/* Ensure map container has proper height and dimensions */
+.network-map-container {
+  height: 600px !important;
+  width: 100% !important;
+  min-height: 500px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: block !important;
+  /* Force GPU acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Force the map to render - ID selector for highest specificity */
+#fiber-network-map {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+}
+
+#fiber-network-map .leaflet-container,
+.network-map-container .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+  background: #e8e8e8 !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* Fullscreen overlay - covers entire viewport */
+.map-fullscreen-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: #fff !important;
+}
+
+/* Fullscreen card - no borders, full size */
+.map-fullscreen-card {
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  height: 100vh !important;
+}
+
+.map-fullscreen-card .card-inner {
+  height: 100vh !important;
+  padding: 0 !important;
+}
+
+/* Fullscreen map container */
+.network-map-container.map-fullscreen {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  min-height: 100vh !important;
+}
+
+/* Fullscreen button styling */
+.map-fullscreen-btn {
+  transition: all 0.2s ease;
+}
+
+.map-fullscreen-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Desktop screens */
+@media screen and (min-width: 768px) {
+  .network-map-container {
+    height: 700px !important;
+  }
+  
+  .network-map-container.map-fullscreen {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+}
+
+/* Mobile-specific */
+@media screen and (max-width: 767px) {
+  .network-map-container {
+    height: 500px !important;
+    min-height: 400px !important;
+  }
+}
+
+/* Force leaflet container to fill parent */
+.network-map-container .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: #f8f9fa !important;
+}
+
+/* Mobile-specific - FIXED PIXEL HEIGHT */
+@media screen and (max-width: 767px) {
+  .network-map-container {
+    height: 500px !important;
+    min-height: 500px !important;
+  }
+}
+
+/* Force proper rendering when viewport changes (desktop mode toggle) */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Ensure overlays are above tiles (some app CSS may override Leaflet defaults) */
+.leaflet-pane.leaflet-tile-pane {
+  z-index: 200 !important;
+}
+
+.leaflet-pane.leaflet-overlay-pane {
+  z-index: 400 !important;
+}
+
+/* Dedicated pane created in NetworkMap.js for cables */
+.leaflet-cablesPane-pane {
+  z-index: 450 !important;
+  pointer-events: auto !important;
+}
+
+/* Force Leaflet SVG path visibility (guards against global CSS like `path{display:none}`) */
+.leaflet-pane path.leaflet-interactive {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  stroke-opacity: 1 !important;
+  fill-opacity: 0.8 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure canvas rendering */
+.leaflet-zoom-animated {
+  will-change: transform !important;
+}
+
+canvas.leaflet-zoom-animated {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Force compositing layer for smoother rendering */
+.network-map-container,
+.network-map-container .leaflet-container {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Desktop mode on mobile - FIXED PIXEL HEIGHT */
+@media screen and (min-width: 980px) {
+  .network-map-container {
+    height: 650px !important;
+    min-height: 600px !important;
+  }
+}
+
+/* Large screens - FIXED PIXEL HEIGHT */
+@media screen and (min-width: 1200px) {
+  .network-map-container {
+    height: 700px !important;
+    min-height: 650px !important;
+  }
+}

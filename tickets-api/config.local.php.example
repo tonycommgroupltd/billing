@@ -1,0 +1,34 @@
+<?php
+/**
+ * Local dev overrides — copy to config.local.php (gitignored).
+ * Use your cPanel remote MySQL hostname so Splynx templates load locally.
+ */
+return [
+    'db' => [
+        'host' => 'YOUR_CPANEL_MYSQL_HOST', // e.g. server123.hosting.com
+        'database' => 'tonycommgroupltd_db',
+        'username' => 'tonycommgroupltd_JRAM',
+        'password' => 'YOUR_PASSWORD',
+        'port' => 3306,
+    ],
+
+    // OpenAI — for TCOM Assistant (technician chat). Never put this key in React .env
+    'openai' => [
+        'api_key' => 'sk-proj-YOUR_KEY_HERE',
+        'model' => 'gpt-4o-mini', // or gpt-4o, gpt-3.5-turbo
+    ],
+
+    // KRA eTIMS VSCU — Tonycomm Virtual FD (local dev: 127.0.0.1:8888)
+    'kra_etims' => [
+        'base_url' => 'http://127.0.0.1:8888/api/v1',
+        'auth_user' => 'admin',
+        'auth_pass' => 'admin',
+        'timeout_seconds' => 30,
+    ],
+
+    // APP.TCOM unified login — set jwt_secret to match Laravel JWT_SECRET on isp server
+    'isp_api' => [
+        'base_url' => 'https://isp.tonycommgroupltd.com/api/v1',
+        'jwt_secret' => 'PASTE_LARAVEL_JWT_SECRET_FROM_isp_.env',
+    ],
+];

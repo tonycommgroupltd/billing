@@ -1,0 +1,135 @@
+.leads-dashboard .leads-toolbar {
+  margin-bottom: 1.25rem;
+}
+
+.leads-dashboard .leads-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+}
+
+.leads-dashboard .leads-toolbar-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 150px;
+}
+
+.leads-dashboard .leads-toolbar-dates .form-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8094ae;
+}
+
+.leads-dashboard .leads-toolbar-dates .form-control {
+  height: 36px;
+  min-width: 150px;
+}
+
+.leads-dashboard .leads-toolbar-presets .btn {
+  height: 36px;
+}
+
+.leads-dashboard .leads-toolbar-presets .btn.active {
+  background: #ebeef2;
+  color: #364a63;
+  border-color: #dbdfea;
+}
+
+.leads-dashboard .leads-toolbar-meta {
+  margin-left: auto;
+  padding-bottom: 8px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.leads-dashboard .leads-stat-row {
+  margin-bottom: 1.25rem;
+}
+
+.leads-dashboard .leads-stat-card {
+  display: block;
+  text-decoration: none;
+}
+
+.leads-dashboard .leads-stat-card:hover .card {
+  box-shadow: 0 4px 14px rgba(54, 74, 99, 0.1);
+}
+
+.leads-dashboard .leads-stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8094ae;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.leads-dashboard .leads-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #364a63;
+}
+
+.leads-dashboard .leads-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.leads-dashboard .leads-stat-icon .icon {
+  font-size: 1.25rem;
+}
+
+.leads-dashboard .leads-pipeline-card {
+  margin-bottom: 1.25rem;
+}
+
+.leads-dashboard .leads-pipeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: #8094ae;
+}
+
+.leads-dashboard .leads-pipeline-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.leads-dashboard .leads-pipeline-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.leads-dashboard .leads-pipeline-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e9ecef;
+}
+
+.leads-dashboard .leads-pipeline-bar > div {
+  min-width: 0;
+  transition: width 0.35s ease;
+}
+
+@media (max-width: 767.98px) {
+  .leads-dashboard .leads-toolbar-meta {
+    margin-left: 0;
+    width: 100%;
+    padding-bottom: 0;
+  }
+}

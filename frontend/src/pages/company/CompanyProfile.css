@@ -1,0 +1,232 @@
+.cp-page {
+  --cp-border: #e3e8ef;
+  --cp-muted: #8094ae;
+  --cp-text: #364a63;
+  --cp-navy: #0c1829;
+  --cp-blue: #00aeef;
+}
+
+.cp-page .cp-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cp-muted);
+}
+
+.cp-page .cp-blurb {
+  margin-top: 4px;
+  color: var(--cp-muted);
+  font-size: 13px;
+  max-width: 560px;
+}
+
+.cp-page .cp-head-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex: 0 0 auto;
+  background: rgba(0, 174, 239, 0.12);
+  color: var(--cp-blue);
+}
+
+.cp-page .cp-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.cp-page .cp-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #cceef9;
+  background: #f0fbff;
+  color: #3d5a6c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cp-page .cp-hint .icon {
+  color: var(--cp-blue);
+  margin-top: 2px;
+}
+
+.cp-page .cp-preview-card {
+  border: 1px solid var(--cp-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.cp-page .cp-preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--cp-border);
+  background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+}
+
+.cp-page .cp-preview-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cp-text);
+}
+
+.cp-page .cp-muted {
+  color: var(--cp-muted);
+  font-size: 12px;
+}
+
+.cp-page .cp-status {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.cp-page .cp-status.is-loading {
+  background: #fff4de;
+  color: #b7791f;
+}
+
+.cp-page .cp-status.is-ready {
+  background: #e8faf3;
+  color: #0f9f6e;
+}
+
+.cp-page .cp-iframe-wrap {
+  position: relative;
+  background: #dfe5ec;
+  min-height: 72vh;
+}
+
+.cp-page .cp-iframe-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(223, 229, 236, 0.92);
+  color: var(--cp-muted);
+  font-size: 13px;
+}
+
+.cp-page .cp-iframe {
+  display: block;
+  width: 100%;
+  min-height: 72vh;
+  height: calc(100vh - 230px);
+  border: 0;
+  background: #dfe5ec;
+}
+
+.cp-edit-modal .modal-content {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.cp-edit-modal .modal-header {
+  border-bottom: 1px solid #e3e8ef;
+  align-items: center;
+}
+
+.cp-edit-dirty {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #b7791f;
+  background: #fff4de;
+  padding: 3px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.cp-edit-body {
+  padding-top: 0.75rem;
+}
+
+.cp-edit-tabs {
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.cp-edit-tabs .nav-link {
+  color: #526484;
+  font-weight: 600;
+  font-size: 13px;
+  border: 0 !important;
+  border-radius: 8px !important;
+  padding: 0.45rem 0.85rem;
+}
+
+.cp-edit-tabs .nav-link.active {
+  color: #0090c8;
+  background: rgba(0, 174, 239, 0.12);
+}
+
+.cp-edit-tab-content {
+  max-height: min(58vh, 560px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.cp-edit-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #364a63;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cp-edit-html-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0090c8;
+  background: #e8f7fd;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.cp-edit-msg {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #0f9f6e;
+}
+
+.cp-edit-footer {
+  border-top: 1px solid #e3e8ef;
+  gap: 8px;
+}
+
+.cp-page .spinning {
+  animation: cp-spin 0.8s linear infinite;
+}
+
+@keyframes cp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

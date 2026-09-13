@@ -1,0 +1,270 @@
+/* Bonus Profile Styles */
+.bonus-profile {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bonus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.bonus-header h2 {
+  color: #333;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.refresh-button, .retry-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.refresh-button:hover, .retry-button:hover {
+  background: #0056b3;
+}
+
+/* Loading State */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Error State */
+.error-message, .no-data-message {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #dc3545;
+}
+
+.error-message h3 {
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.no-data-message {
+  border-left: 4px solid #ffc107;
+}
+
+.no-data-message h3 {
+  color: #856404;
+}
+
+/* Bonus Sections */
+.bonus-section {
+  margin-bottom: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 25px;
+}
+
+.bonus-section h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.stat-card.installations {
+  border-left-color: #28a745;
+}
+
+.stat-card.other-tickets {
+  border-left-color: #17a2b8;
+}
+
+.stat-card.total-today {
+  border-left-color: #ffc107;
+}
+
+.stat-card.total-earned {
+  border-left-color: #28a745;
+}
+
+.stat-card.total-paid {
+  border-left-color: #6f42c1;
+}
+
+.stat-card.balance-owed {
+  border-left-color: #fd7e14;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.stat-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-bonus {
+  font-size: 1rem;
+  color: #28a745;
+  font-weight: 600;
+}
+
+.award-status {
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.award-status.awarded {
+  background: #d4edda;
+  color: #155724;
+}
+
+.award-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Bonus Rules */
+.rules-grid {
+  display: grid;
+  gap: 15px;
+}
+
+.rule-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.rule-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.rule-details p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Debug Info */
+.debug-info {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.debug-info details {
+  margin-top: 10px;
+}
+
+.debug-info summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #666;
+  padding: 10px;
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+.debug-info pre {
+  background: #343a40;
+  color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  margin: 10px 0 0 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bonus-profile {
+    padding: 15px;
+  }
+  
+  .bonus-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-card {
+    padding: 15px;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animation for data updates */
+@keyframes dataUpdate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.stat-card.updating {
+  animation: dataUpdate 0.3s ease;
+}

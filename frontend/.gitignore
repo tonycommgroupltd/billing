@@ -1,0 +1,39 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/dist-desktop
+/dist-desktop-v2
+/dist-desktop-ok
+/dist-electron
+/dist-desktop-old*
+/release-desktop
+/release-desktop-new
+/release-desktop-020
+/installer-out
+/installer-out-old*
+/out-nsis
+/out-nsis2
+/out-setup
+# Electron runtime deps (installed via electron/package.json)
+/electron/node_modules
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

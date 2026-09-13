@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+vendor/
+.expo/
+
+# Builds
+build/
+dist/
+dist-*/
+release*/
+out-*/
+coverage/
+
+# Secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+!**/.acs.env.example
+tickets-api/config.local.php
+*.pem
+*.key
+credentials*.json
+
+# Junk / dumps
+*.log
+*.sql
+*.sql.gz
+*.csv
+*.tsv
+*.pdf
+*.zip
+*.exe
+*.py
+*.ps1
+*.sh
+__pycache__/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cursor/
+
+# Allow schema SQL only
+!tickets-api/*-schema.sql
+!tickets-api/BONUS_SYSTEM_SETUP.sql
+!tickets-api/bonus-system*.sql

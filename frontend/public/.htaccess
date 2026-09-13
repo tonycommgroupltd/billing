@@ -1,0 +1,44 @@
+# React SPA on cPanel/LiteSpeed (app.tonycommgroupltd.com)
+# Same-origin API proxies to isp.tonycommgroupltd.com (required for tickets-api on cPanel).
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Fallback proxy if build still uses /production-api paths
+  RewriteRule ^production-api/?(.*)$ https://isp.tonycommgroupltd.com/api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^tickets-api/?(.*)$ https://isp.tonycommgroupltd.com/tickets-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^tr069-api/?(.*)$ https://isp.tonycommgroupltd.com/tr069-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^olt-api/?(.*)$ https://isp.tonycommgroupltd.com/olt-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^finance-api/?(.*)$ https://isp.tonycommgroupltd.com/finance-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^portal-api/?(.*)$ https://isp.tonycommgroupltd.com/portal-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^socket\.io/?(.*)$ https://isp.tonycommgroupltd.com/socket.io/$1 [P,L,E=TCOM_PROXY:1]
+
+  # Never rewrite API-shaped paths to index.html
+  RewriteRule ^(production-api|standby-api|tickets-api|finance-api|portal-api|olt-api|tr069-api|vpn-api|standby-vpn-api|socket\.io)(/|$) - [L]
+
+  RewriteRule ^index\.html$ - [L]
+  # Explicit static assets (avoid SPA fallback if file missing briefly during deploy)
+  RewriteRule ^(manifest\.json|asset-manifest\.json|favicon\.ico|robots\.txt)$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Never cache the HTML shell (JS/CSS are content-hashed)
+<IfModule mod_headers.c>
+  RequestHeader set Host "isp.tonycommgroupltd.com" env=TCOM_PROXY
+  <FilesMatch "^(index\.html|asset-manifest\.json|service-worker\.js|precache-manifest\..*\.js)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|map)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # Avoid "Manifest: Line 1 Syntax error" when WAF returns HTML — force JSON type for real files
+  <FilesMatch "^(manifest|asset-manifest)\.json$">
+    Header set Content-Type "application/json; charset=utf-8"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>

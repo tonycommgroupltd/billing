@@ -1,0 +1,149 @@
+.reloc-finance .reloc-kpi {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.04);
+  height: 100%;
+  overflow: hidden;
+}
+
+.reloc-finance .reloc-kpi .card-inner {
+  padding: 1.15rem 1.25rem;
+}
+
+.reloc-finance .reloc-kpi-label {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #8094ae;
+  margin-bottom: 0.35rem;
+}
+
+.reloc-finance .reloc-kpi-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #364a63;
+  line-height: 1.2;
+}
+
+.reloc-finance .reloc-kpi-sub {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: #8094ae;
+}
+
+.reloc-finance .reloc-kpi--accent {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+}
+
+.reloc-finance .reloc-kpi--accent .reloc-kpi-label,
+.reloc-finance .reloc-kpi--accent .reloc-kpi-sub {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.reloc-finance .reloc-kpi--accent .reloc-kpi-value {
+  color: #fff;
+}
+
+.reloc-finance .reloc-table thead th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8094ae;
+  border-bottom-width: 1px;
+  white-space: nowrap;
+}
+
+.reloc-finance .reloc-table tbody td {
+  vertical-align: middle;
+}
+
+.reloc-finance .reloc-ticket-link {
+  font-weight: 600;
+  color: #0f766e;
+  text-decoration: none;
+}
+
+.reloc-finance .reloc-ticket-link:hover {
+  text-decoration: underline;
+}
+
+.reloc-finance .reloc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.reloc-finance .reloc-chip--paid {
+  background: #e8f8f0;
+  color: #0f7a47;
+}
+
+.reloc-finance .reloc-chip--pending {
+  background: #fff6e5;
+  color: #b7791f;
+}
+
+.reloc-finance .reloc-chip--unpaid {
+  background: #f2f4f7;
+  color: #526484;
+}
+
+.reloc-finance .reloc-chip--ticket-status {
+  background: #eef3ff;
+  color: #3b5bdb;
+  max-width: 180px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.reloc-finance .reloc-panel-summary {
+  background: #f5f8fb;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.reloc-finance .reloc-panel-summary dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #8094ae;
+  margin: 0;
+}
+
+.reloc-finance .reloc-panel-summary dd {
+  margin: 0 0 0.55rem;
+  font-weight: 600;
+  color: #364a63;
+}
+
+.reloc-finance .reloc-panel-summary dd:last-child {
+  margin-bottom: 0;
+}
+
+.reloc-finance .reloc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.reloc-finance .reloc-toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.reloc-finance .reloc-search {
+  min-width: 220px;
+}

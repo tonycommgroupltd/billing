@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../../../smartOLT"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../../Documents/frontend"
+		}
+	],
+	"settings": {}
+}

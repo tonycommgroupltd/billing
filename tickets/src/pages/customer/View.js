@@ -1,0 +1,3031 @@
+import React, { useState, useEffect, forwardRef } from "react";
+import Content from "../../layout/content/Content";
+import Head from "../../layout/head/Head";
+import { Nav, NavItem, NavLink, TabContent, TabPane, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Spinner, Badge, DropdownToggle, DropdownMenu, Dropdown } from "reactstrap";
+import classnames from "classnames";
+import {
+    Block,
+    BlockHead,
+    BlockBetween,
+    BlockDes,
+    BlockHeadContent,
+    BlockTitle,
+    Button,
+    RSelect,
+    Icon,
+    DataTablePagination,
+} from "../../components/Component";
+import { http } from '../../helpers';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import { serviceOptions, billingTypeOptions, categoryOptions, paymentOptions, messageOptions, billingPeriodOptions } from "../components/forms/SelectData";
+import { FocusError } from 'focus-formik-error';
+import { toast } from "react-toastify";
+import DataTable from "react-data-table-component";
+import exportFromJSON from "export-from-json";
+import CopyToClipboard from "react-copy-to-clipboard";
+import Swal from "sweetalert2";
+import { Edit20Regular, Delete20Regular, Checkmark24Regular } from '@fluentui/react-icons';
+import { AsyncPaginate } from 'react-select-async-paginate';
+import DatePicker from "react-datepicker";
+import TimeAgo from 'react-timeago';
+import dateFormat from 'dateformat';
+import { isDate } from "date-fns";
+import StatsTab from "./StatsTab";
+import moment from 'moment';
+
+const parseDateString = (value, originalValue) => {
+    return isDate(originalValue)
+        ? originalValue  // this make sure that a value is provided
+        : new Date(originalValue);
+}
+
+const CloseButton = () => {
+    return (
+        <span className="btn-trigger toast-close-button" role="button">
+            <Icon name="cross"></Icon>
+        </span>
+    );
+};
+
+const ExampleCustomInput = forwardRef(({ value, onClick, onChange, className, children }, ref) => (
+    <div onClick={onClick} ref={ref}>
+        <div className="form-icon form-icon-left">
+            <Icon name="calendar"></Icon>
+        </div>
+        <input className={className} type="text" value={value} onChange={onChange} />
+        {children}
+    </div>
+));
+
+const addWeeks = (date, weeks) => {
+    date.setDate(date.getDate() + 7 * weeks);
+    return moment(date.toISOString()).toDate();
+}
+
+const addMonths = (date, months) => {
+    date.setMonth(date.getMonth() + months);
+    return moment(date.toISOString()).toDate();
+}
+
+const Export = ({ data }) => {
+    const [modal, setModal] = useState(false);
+
+    useEffect(() => {
+        if (modal === true) {
+            setTimeout(() => setModal(false), 2000);
+        }
+    }, [modal]);
+
+    const fileName = "user-data";
+
+    const exportCSV = () => {
+        const exportType = exportFromJSON.types.csv;
+        exportFromJSON({ data, fileName, exportType });
+    };
+
+    const exportExcel = () => {
+        const exportType = exportFromJSON.types.xls;
+        exportFromJSON({ data, fileName, exportType });
+    };
+
+    const copyToClipboard = () => {
+        setModal(true);
+    };
+
+    return (
+        <React.Fragment>
+            <div className="dt-export-buttons d-flex align-center">
+                <div className="dt-export-title d-none d-md-inline-block">Export</div>
+                <div className="dt-buttons btn-group flex-wrap">
+                    <CopyToClipboard text={JSON.stringify(data)}>
+                        <Button className="btn btn-secondary buttons-copy buttons-html5" onClick={() => copyToClipboard()}>
+                            <span>Copy</span>
+                        </Button>
+                    </CopyToClipboard>{" "}
+                    <button className="btn btn-secondary buttons-csv buttons-html5" type="button" onClick={() => exportCSV()}>
+                        <span>CSV</span>
+                    </button>{" "}
+                    <button className="btn btn-secondary buttons-excel buttons-html5" type="button" onClick={() => exportExcel()}>
+                        <span>Excel</span>
+                    </button>{" "}
+                </div>
+            </div>
+            <Modal isOpen={modal} className="modal-dialog-centered text-center" size="sm">
+                <ModalBody className="text-center m-2">
+                    <h5>Copied to clipboard</h5>
+                </ModalBody>
+                <div className="p-3 bg-light">
+                    <div className="text-center">Copied {data.length} rows to clipboard</div>
+                </div>
+            </Modal>
+        </React.Fragment>
+    );
+};
+
+const View = () => {
+    const { id } = useParams();
+    const [serviceId, setServiceId] = useState(0);
+    const [data, setData] = useState([]);
+    const [formData, setFormData] = useState([]);
+    const [formDataPay, setFormDataPay] = useState([]);
+    const [formDataInvoice, setFormDataInvoice] = useState([]);
+    const [dataServices, setDataServices] = useState([]);
+    const [dataInvoices, setDataInvoices] = useState([]);
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [apiLoading, setApiLoading] = useState(false);
+    const [apiPayLoading, setApiPayLoading] = useState(false);
+    const [api2Loading, setApi2Loading] = useState(false);
+    const [api3Loading, setApi3Loading] = useState(false);
+    const [apiInvoicesLoading, setApiInvoicesLoading] = useState(false);
+    const [apiInvoiceLoading, setApiInvoiceLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState("1");
+    const [page, setPage] = useState(1);
+    const [pageInvoices, setPageInvoices] = useState(1);
+    const [totalRows, setTotalRows] = useState(0);
+    const [totalRowsInvoices, setTotalRowsInvoices] = useState(0);
+    const [perPage, setPerPage] = useState(10);
+    const [perPageInvoices, setPerPageInvoices] = useState(10);
+    const [sort, setSort] = useState('asc');
+    const [sortInvoices, setSortInvoices] = useState('asc');
+    const [sortCol, setSortCol] = useState('id');
+    const [sortColInvoices, setSortColInvoices] = useState('id');
+    const [searchText, setSearchText] = useState("");
+    const [searchTextInvoices, setSearchTextInvoices] = useState("");
+    const [toggleCleared, setToggleCleared] = useState(false);
+    const [toggleClearedInvoices, setToggleClearedInvoices] = useState(false);
+    const [reload, setReload] = useState(false);
+    const [cust, setCust] = useState(false);
+    const [reloadInvoices, setReloadInvoices] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [formLoading, setFormLoading] = useState(false);
+    const [payModal, setPayModal] = useState(false);
+    const [generateInvoiceModal, setGenerateInvoiceModal] = useState(false);
+    const [messageModal, setMessageModal] = useState(false);
+    const [passwordModal, setPasswordModal] = useState(false);
+    const [invoiceId, setInvoiceId] = useState(0);
+    const [open, setOpen] = useState(false);
+    const toggleAction = () => setOpen((prevState) => !prevState);
+    const [passState, setPassState] = useState(false);
+
+    const bill_date = new Date();
+    bill_date.setMonth(bill_date.getMonth() + 1);
+    bill_date.toISOString();
+
+    const today_date = new Date();
+    today_date.toISOString();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const phoneRegex = RegExp(
+        /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+    );
+
+    const execToast = (placement, message) => {
+        toast.error(message, {
+            position: placement,
+            autoClose: true,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: false,
+            closeButton: <CloseButton />,
+        });
+    };
+
+    const successToast = (placement, message) => {
+        toast.success(message, {
+            position: placement,
+            autoClose: true,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: false,
+            closeButton: <CloseButton />,
+        });
+    };
+
+    /*const execToastInfo = (placement, message) => {
+        toast.info(message, {
+            position: placement,
+            autoClose: true,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: false,
+            closeButton: <CloseButton />,
+        });
+    };*/
+
+    const formik = useFormik({
+        initialValues: {
+            billing_type: data?.billing_type ?? { value: 1, label: "Recurring" },
+            category: data?.category ?? { value: 1, label: "Individual" },
+            name: data?.name ?? '',
+            address: data?.address ?? '',
+            email: data?.email ?? '',
+            phone_number: data?.phone_number ?? '',
+            dob: data?.dob ?? '',
+            city: data?.city ?? ''
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            name: Yup.string('Enter your full name')
+                .required('Full name is required'),
+            email: Yup.string('Enter your email')
+                .email('Enter a valid email'),
+            phone_number: Yup.string().matches(phoneRegex, "Invalid characters in phone number field (allowed only 0-9)").required("Phone is required"),
+        }),
+        onSubmit: (data) => {
+            setLoading(true);
+            http
+                .post(`/update-customer/${id}`, {
+                    billing_type: data.billing_type,
+                    category: data.category,
+                    name: data.name,
+                    address: data.address,
+                    email: data.email,
+                    phone_number: data.phone_number,
+                    dob: data.dob,
+                    city: data.city
+                })
+                .then(response => {
+                    setLoading(false);
+                    if (response.data?.message) {
+                        successToast("top-right", response.data?.message);
+                    }
+                    if (response.data?.customer) {
+                        setData(response.data?.customer);
+                    }
+                })
+                .catch(err => {
+                    setLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const formikAdd = useFormik({
+        initialValues: {
+            plan: '',
+            installation: false,
+            generate_invoice: false,
+            use_credit: false,
+            due_date: new Date(),
+            billing_type: { value: 1, label: "Recurring" },
+            billing_period: { value: 3, label: "Monthly" },
+            mikrotik_name: '',
+            mikrotik_password: '',
+            installation_fee: 0,
+            price: 0,
+            start_date: new Date(),
+            end_date: '',
+            bill_to: bill_date,
+            status: { value: 2, label: "Active" }
+        },
+        /*const schema = Yup.object().shape({
+            start_date: Yup.date()
+                .typeError('Start Date is required')
+                .required('Start Date is required'),
+            end_date: Yup.date()
+                .typeError('End Date is required')
+                .required('End Date is required')
+                .when('start_date', (start_date) => {
+                    if (start_date) {
+                        return Yup.date()
+                            .min(start_date, 'End Date must be after Start Date')
+                            .typeError('End Date is required')
+                    }
+                }),
+        })*/
+        validationSchema: Yup.object({
+            mikrotik_name: Yup.string('Enter the mikrotik name')
+                .required('Mikrotik name field is required')
+                .matches(/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/, 'Invalid characters in field mikrotik name (allowed only A-Z, a-z, 0-9 and dash)'),
+            mikrotik_password: Yup.string('Enter the mikrotik password')
+                .min(4, 'Password should be of minimum 4 characters length')
+                .max(30, 'Password should be of maximum 30 characters length')
+                .required('Password is required'),
+            installation_fee: Yup.number()
+                /*when("generate_invoice", {
+                    is: true,
+                    then: Yup.number('Must be a number type').positive()
+                })
+                .*/
+                .when(["generate_invoice", "installation"], (generate_invoice, installation) => {
+                    if (generate_invoice === true && installation === true) return Yup.number('Must be a number type').positive();
+                }),
+            price: Yup.number('Must be a number type')
+                .required("Please enter a price. The field cannot be left blank.")
+                .positive(),
+            due_date: Yup.date()
+                .when("generate_invoice", (generate_invoice) => {
+                    if (generate_invoice === true) return Yup.date().typeError('Due Date is required').required('Due Date is required');
+                }),
+            start_date: Yup.date()
+                .transform(parseDateString)
+                .typeError("Please enter a valid date")
+                .required(),
+            bill_to: Yup.date()
+                .transform(parseDateString)
+                .typeError("Please enter a valid date")
+                .required()
+                .min(today, "Date cannot be in the past"),
+            /*start_date: Yup.date()
+                .transform(parseDateString)
+                .typeError("please enter a valid date")
+                .required()
+                .min("2025-11-13", "Date is too early"),
+            end_date: Yup.date()
+                .transform(parseDateString)
+                .typeError("please enter a valid date")
+            .min("1969-11-13", "Date is too early")*/
+        }).shape({
+            plan: Yup.object().shape({
+                id: Yup.string().required('Plan is required')
+            }),
+        }),
+        onSubmit: (data, { resetForm }) => {
+
+            setFormLoading(true);
+            http
+                .post(`/add-services`, {
+                    customer_id: id,
+                    plan_id: data.plan.id,
+                    installation: data.installation,
+                    generate_invoice: data.generate_invoice,
+                    use_credit: data.use_credit,
+                    due_date: data.due_date ? new Date(data.due_date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.due_date,
+                    mikrotik_name: data.mikrotik_name,
+                    mikrotik_password: data.mikrotik_password,
+                    installation_fee: data.installation_fee,
+                    price: data.price,
+                    billing_type: data.billing_type,
+                    billing_period: data.billing_period,
+                    start_date: data.start_date ? new Date(data.start_date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.start_date,
+                    end_date: data.end_date ? new Date(data.end_date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.end_date,
+                    bill_to: data.bill_to ? new Date(data.bill_to).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.bill_to,
+                    status: data.status
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if ((response.data?.message && response.data?.error)) {
+                        execToast("top-right", response.data?.message);
+                    }
+                    else {
+                        successToast("top-right", response.data?.message);
+                        resetForm();
+                        toggleAdd();
+                        setCust(!cust);
+                        setReloadInvoices(!reloadInvoices);
+                        if (page === 1) {
+                            setReload(!reload);
+                        } else {
+                            setPage(1);
+                        }
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const formikEdit = useFormik({
+        initialValues: {
+            id: formData?.id ?? 0,
+            plan: { id: formData?.plan_id ?? '', title: formData?.title ?? '' },
+            mikrotik_name: formData?.mikrotik_name ?? '',
+            mikrotik_password: formData?.mikrotik_password ?? '',
+            price: formData?.price ?? 0,
+            start_date: Date.parse(formData?.start_date),
+            end_date: Date.parse(formData?.end_date),
+            billing_type: formData?.billing_type ?? { value: 1, label: "Recurring" },
+            billing_period: formData?.billing_period ?? { value: 3, label: "Monthly" },
+            bill_to: Date.parse(formData?.bill_to),
+            status: formData?.status ?? { value: 2, label: "Active" }
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            mikrotik_name: Yup.string('Enter the mikrotik name')
+                .required('Mikrotik name field is required')
+                .matches(/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/, 'Invalid characters in field mikrotik name (allowed only A-Z, a-z, 0-9 and dash)'),
+            mikrotik_password: Yup.string('Enter the mikrotik password')
+                .min(4, 'Password should be of minimum 4 characters length')
+                .max(30, 'Password should be of maximum 30 characters length')
+                .required('Password is required'),
+            price: Yup.number('Must be a number type')
+                .required("Please enter a price. The field cannot be left blank.")
+                .positive(),
+            start_date: Yup.date()
+                .transform(parseDateString)
+                .typeError("Please enter a valid date")
+                .required(),
+            bill_to: Yup.date()
+                .transform(parseDateString)
+                .typeError("Please enter a valid date")
+                .required(),
+            //.min(today, "Date cannot be in the past"),
+        }).shape({
+            plan: Yup.object().shape({
+                id: Yup.string().required('Plan is required')
+            }),
+        }),
+        onSubmit: (data, { resetForm }) => {
+            setFormLoading(true);
+            http
+                .post(`/update-services/${data.id}`, {
+                    plan_id: data.plan.id,
+                    mikrotik_name: data.mikrotik_name,
+                    mikrotik_password: data.mikrotik_password,
+                    price: data.price,
+                    billing_type: data.billing_type,
+                    billing_period: data.billing_period,
+                    start_date: data.start_date ? new Date(data.start_date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.start_date,
+                    end_date: data.end_date ? new Date(data.end_date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.end_date,
+                    bill_to: data.bill_to ? new Date(data.bill_to).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.bill_to,
+                    status: data.status
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if ((response.data?.message && response.data?.error)) {
+                        execToast("top-right", response.data?.message);
+                    }
+                    else {
+                        successToast("top-right", response.data?.message);
+                        //resetForm();
+                        toggleEdit();
+                        setReload(!reload);
+                        setServiceId(0);
+
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const formikGenerateInvoice = useFormik({
+        initialValues: {
+            service: null,
+            billing_period: null,
+            send_sms: false,
+            date: Date.parse(today_date),
+            amount: 0,
+        },
+        validationSchema: Yup.object({
+            amount: Yup.number('Must be a number type')
+                .required("Please enter amount. The field cannot be left blank.")
+                .positive("Amount must be greater than 0."),
+            date: Yup.date()
+                .transform(parseDateString)
+                .typeError("Please enter a valid date")
+                .required(),
+        }).shape({
+            service: Yup.object().shape({
+                value: Yup.string().required('Service is required')
+            }),
+            billing_period: Yup.object().shape({
+                value: Yup.string().required('Billing period is required')
+            })
+        }),
+        onSubmit: (data, { resetForm }) => {
+            setFormLoading(true);
+            http
+                .post(`/generate-invoice`, {
+                    service_id: data.service.value,
+                    send_sms: data.send_sms,
+                    amount: data.amount,
+                    billing_period: data.billing_period,
+                    date: data.date ? new Date(data.date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.date
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if ((response.data?.message && response.data?.error)) {
+                        execToast("top-right", response.data?.message);
+                    }
+                    else {
+                        successToast("top-right", response.data?.message);
+                        resetForm();
+                        toggleGenerateInvoice();
+                        if (page === 1) {
+                            setReloadInvoices(!reloadInvoices);
+                        } else {
+                            setPageInvoices(1);
+                        }
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const toggle = (tab) => {
+        if (activeTab !== tab) setActiveTab(tab);
+    };
+
+    useEffect(() => {
+        const fetchCustomer = async (id) => {
+            setApiLoading(true);
+            try {
+                if (id !== undefined || null || "") {
+                    const response = await http.get(`${process.env.REACT_APP_API_URL}/view-customer/${id}`);
+                    if (response.data?.customer) {
+                        setData(response.data?.customer);
+                    }
+                }
+                setApiLoading(false);
+            } catch (error) {
+                //console.log(error)
+            }
+        };
+
+        fetchCustomer(id);
+
+        return () => {
+            setApiLoading(false);
+        };
+
+    }, [id, cust]);
+
+    useEffect(() => {
+
+        const fetchServices = async (id) => {
+            setApi2Loading(true);
+            try {
+                if (id !== undefined || null || "") {
+                    const response = await http.get(`${process.env.REACT_APP_API_URL}/list-services/${id}?q=${searchText}&page=${page}&per_page=${perPage}&sort_col=${sortCol}&sort=${sort}`);
+
+                    if (response.data?.data) {
+                        setDataServices(response.data?.data);
+                        setTotalRows(response.data?.total);
+                    }
+                }
+                setApi2Loading(false);
+            } catch (error) {
+                setApi2Loading(false);
+            }
+        };
+
+        fetchServices(id);
+
+    }, [id, page, perPage, sortCol, sort, searchText, reload]);
+
+    useEffect(() => {
+        const fetchService = async (id) => {
+
+            setApi3Loading(true);
+            try {
+                if (id !== undefined || null || "") {
+                    const response = await http.get(`${process.env.REACT_APP_API_URL}/view-services/${id}`);
+
+                    if (response.data?.service) {
+                        setFormData(response.data?.service);
+                    }
+                }
+                setApi3Loading(false);
+            } catch (error) {
+                setApi3Loading(false);
+            }
+        };
+
+        if (serviceId > 0) { fetchService(serviceId) };
+    }, [serviceId]);
+
+    useEffect(() => {
+        const fetchInvoice = async (id) => {
+
+            setApiPayLoading(true);
+            try {
+                if (id !== undefined || null || "") {
+                    const response = await http.get(`${process.env.REACT_APP_API_URL}/view-invoices/${id}`);
+
+                    if (response.data?.invoice) {
+                        setFormDataPay(response.data?.invoice);
+                    }
+                }
+                setApiPayLoading(false);
+            } catch (error) {
+                setApiPayLoading(false);
+            }
+        };
+
+        if (invoiceId > 0) { fetchInvoice(invoiceId) };
+    }, [invoiceId]);
+
+    useEffect(() => {
+
+        const fetchServices = async (id) => {
+
+            setApiInvoiceLoading(true);
+            try {
+                const response = await http.get(`${process.env.REACT_APP_API_URL}/fetch-services/${id}`);
+                if (response.data?.services) {
+                    setFormDataInvoice(response.data);
+                }
+                setApiInvoiceLoading(false);
+            } catch (error) {
+                setApiInvoiceLoading(false);
+            }
+        };
+
+        if (generateInvoiceModal) { fetchServices(id) };
+    }, [id, generateInvoiceModal]);
+
+    useEffect(() => {
+
+        const fetchInvoices = async (id) => {
+            setApiInvoicesLoading(true);
+            try {
+                if (id !== undefined || null || "") {
+                    const response = await http.get(`${process.env.REACT_APP_API_URL}/list-customer-invoices/${id}?q=${searchTextInvoices}&page=${pageInvoices}&per_page=${perPageInvoices}&sort_col=${sortColInvoices}&sort=${sortInvoices}`);
+
+                    if (response.data?.data) {
+                        setDataInvoices(response.data?.data);
+                        setTotalRowsInvoices(response.data?.total);
+                    }
+                }
+                setApiInvoicesLoading(false);
+            } catch (error) {
+                setApiInvoicesLoading(false);
+            }
+        };
+
+        fetchInvoices(id);
+
+    }, [id, pageInvoices, perPageInvoices, sortColInvoices, sortInvoices, searchTextInvoices, reloadInvoices]);
+
+    const columns = [
+        {
+            id: 1,
+            name: "ID",
+            selector: (row) => row.id,
+            width: "80px",
+            wrap: true,
+            sortable: true,
+            ref: "id"
+        },
+        {
+            id: 2,
+            name: "Status",
+            cell: (row) =>
+                row.online === 1 ? <Badge color="success">Online</Badge> : row.status.value === 0 ? <Badge color="warning">Pending</Badge> : row.status.value === 1 ? <Badge color="dark">Disabled</Badge> : row.status.value === 2 ? <Badge color="primary">Active</Badge> : row.status.value === 3 ? <Badge color="info">Paused</Badge> : ''
+            ,
+            selector: (row) => row.status,
+            wrap: true,
+            sortable: true,
+            ref: "status"
+        },
+        {
+            id: 3,
+            name: "Plan",
+            cell: (row) => (
+                <div
+                    className="button-link"
+                /*onClick={() => confirmDelete(row.plan_id, row.title)}*/
+                >
+                    {row.title}
+                </div>
+            ),
+            selector: (row) => row.title,
+            wrap: true,
+            sortable: true,
+            ref: "title",
+        },
+        {
+            id: 4,
+            name: "Price",
+            selector: (row) => Number(row.price).toFixed(2) + ' Sh',
+            wrap: true,
+            sortable: true,
+            ref: "price",
+        },
+        {
+            id: 5,
+            name: "Start date",
+            selector: (row) => row.start_date ? dateFormat(row.start_date, "dd-mm-yyyy") : '',
+            wrap: true,
+            sortable: true,
+            ref: "start_date",
+        },
+        {
+            id: 6,
+            name: "Billing type",
+            selector: (row) => <Badge color="dark">{row?.billing_type?.label ?? 'None'}</Badge>,
+            width: "140px",
+            wrap: true,
+            sortable: true,
+            ref: "billing_type->value",
+        },
+        {
+            id: 7,
+            name: "Bill to",
+            selector: (row) => row.bill_to ? dateFormat(row.bill_to, "dd-mm-yyyy") : '',
+            wrap: true,
+            sortable: true,
+            ref: "bill_to",
+        },
+        {
+            id: 8,
+            name: "Service login",
+            selector: (row) => row.mikrotik_name,
+            wrap: true,
+            sortable: true,
+            ref: "mikrotik_name",
+        },
+        {
+            id: 9,
+            name: "IPv4",
+            selector: (row) => row.mikrotik_ipv4,
+            wrap: true,
+            sortable: false,
+        },
+        {
+            name: "Actions",
+            cell: (row) => (
+                <ul className="nk-tb-actions gx-1">
+                    <li>
+                        <div
+                            className="button-link"
+                            onClick={() => {
+                                setServiceId(parseInt(row.id));
+                                toggleEdit();
+                            }}
+                        >
+                            <Edit20Regular />
+                        </div>
+                    </li>
+                    <li>
+                        <div
+                            className="button-link"
+                            onClick={() => confirmDelete(row.id, row.title)}
+                        >
+                            <Delete20Regular />
+                        </div>
+                    </li>
+                </ul>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+        },
+    ];
+
+    const columnsInvoices = [
+        {
+            id: 1,
+            name: "Status",
+            cell: (row) =>
+                row.status && row.status.value === 1 ? <Badge color="danger">Unpaid</Badge> : row.status && row.status.value === 2 ? <Badge color="success">Paid</Badge> : <Badge color="danger">Unpaid</Badge>
+            ,
+            selector: (row) => row.status,
+            wrap: true,
+            sortable: true,
+            ref: "invoices.status->value"
+        },
+        {
+            id: 2,
+            name: "Customer name",
+            selector: (row) => <Link to={`${process.env.PUBLIC_URL}/admin/customers/view/${row.customer_id}`}>{row.name}</Link>,
+            wrap: false,
+            sortable: false,
+            ref: "customer_name",
+        },
+        {
+            id: 3,
+            name: "Date",
+            selector: (row) => dateFormat(row.invoice_date, "yyyy-mm-dd"),
+            wrap: true,
+            sortable: true,
+            ref: "invoice_date",
+        },
+        {
+            id: 4,
+            name: "Total",
+            selector: (row) => Number(row.total).toFixed(2) + ' Sh',
+            wrap: true,
+            sortable: true,
+            ref: "total",
+        },
+        {
+            id: 5,
+            name: "Due",
+            cell: (row) => row.due ? Number(row.due).toFixed(2) + ' Sh' : '',
+            selector: (row) => row.due,
+            wrap: true,
+            sortable: false,
+            ref: "due",
+        },
+        {
+            id: 6,
+            name: "Payment date",
+            cell: (row) => row.payment_date ? dateFormat(row.payment_date, "yyyy-mm-dd") : '',
+            selector: (row) => row.payment_date,
+            wrap: true,
+            sortable: false,
+            ref: "payment_date",
+        },
+        {
+            name: "Actions",
+            cell: (row) => (
+                <ul className="nk-tb-actions gx-1">
+                    {row.due ?
+                        <li>
+                            <div
+                                className="button-link"
+                                onClick={() => {
+                                    setInvoiceId(parseInt(row.id));
+                                    togglePay();
+                                }}
+                            >
+                                <Checkmark24Regular />
+                            </div>
+                        </li> : null}
+                    <li >
+                        <div className="button-link" onClick={() => confirmDeleteInvoices(row.id, row.id)}>
+                            <Delete20Regular />
+                        </div>
+                    </li>
+
+                </ul>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+        },
+    ];
+
+    const handlePageChange = page => {
+        setPage(page);
+        setToggleCleared(!toggleCleared);
+    };
+
+    const handlePageChangeInvoices = page => {
+        setPageInvoices(page);
+        setToggleClearedInvoices(!toggleClearedInvoices);
+    };
+
+    const handlePerRowsChange = (e, perPageO) => {
+
+        let newPage = 1;
+        if (parseInt(perPageO) > parseInt(e.target.value) && page !== 1) {
+            newPage = (Math.ceil((parseInt(perPageO) / parseInt(e.target.value))) * (page - 1)) + 1;
+        } else if (page !== 1) {
+            newPage = Math.ceil((parseInt(perPageO) / parseInt(e.target.value)) * page);
+        }
+        setPerPage(e.target.value);
+        setPage(newPage);
+        setToggleCleared(!toggleCleared);
+    };
+
+    const handlePerRowsChangeInvoices = (e, perPageO) => {
+
+        let newPage = 1;
+        if (parseInt(perPageO) > parseInt(e.target.value) && page !== 1) {
+            newPage = (Math.ceil((parseInt(perPageO) / parseInt(e.target.value))) * (page - 1)) + 1;
+        } else if (page !== 1) {
+            newPage = Math.ceil((parseInt(perPageO) / parseInt(e.target.value)) * page);
+        }
+        setPerPageInvoices(e.target.value);
+        setPageInvoices(newPage);
+        setToggleClearedInvoices(!toggleClearedInvoices);
+    };
+
+    const handleSort = async (column, sortDirection) => {
+        //setSort(column.name);
+        //setOrder(sortDirection);
+        setSort(sortDirection);
+        setSortCol(column.ref);
+    };
+
+    const handleSortInvoices = async (column, sortDirection) => {
+        //setSort(column.name);
+        //setOrder(sortDirection);
+        setSortInvoices(sortDirection);
+        setSortColInvoices(column.ref);
+    };
+
+    const confirmDelete = (id, title) => {
+        Swal.fire({
+            title: "Delete internet service",
+            text: `Are you sure you want to delete "${title}"?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                http
+                    .delete(`/services/${id}`)
+                    .then(response => {
+                        if ((response.data?.message && response.data?.error)) {
+                            Swal.fire("Error!", response.data?.message, "error");
+                        }
+                        else {
+                            Swal.fire("Deleted!", response.data?.message, "success");
+                            if (page === 1) {
+                                setReload(!reload);
+                            } else {
+                                setPage(1);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire("Error!", err.message, "warning");
+                    })
+
+            }
+        });
+    };
+
+    const confirmDeleteInvoices = (id, title) => {
+        Swal.fire({
+            title: "Delete Invoice",
+            text: `Are you sure you want to delete "${title}"?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                http
+                    .delete(`/invoices/${id}`)
+                    .then(response => {
+                        if (response.data?.message) {
+                            Swal.fire("Deleted!", response.data?.message, "success");
+                            if (page === 1) {
+                                setReloadInvoices(!reloadInvoices);
+                            } else {
+                                setPageInvoices(1);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire("Error!", err.message, "warning");
+                    })
+
+            }
+        });
+    };
+
+    const toggleAdd = () => {
+        setModal(!modal);
+    };
+
+    const toggleGenerateInvoice = () => {
+        setGenerateInvoiceModal(!generateInvoiceModal);
+    };
+
+    const toggleEdit = () => {
+        setEditModal(!editModal);
+    };
+
+    const togglePay = () => {
+        setPayModal(!payModal);
+    };
+
+    const toggleMessage = () => {
+        setMessageModal(!messageModal);
+    };
+
+    const togglePassword = () => {
+        setPasswordModal(!passwordModal);
+    };
+
+    const fetchPlans = async (search, loadedOptions, { page }) => {
+        return http.get(`/get-plans?q=${search}&page=${page}`).then(result => {
+
+            const res = result.data;
+
+            return {
+                options: res.options,
+                hasMore: res.has_more,
+                additional: {
+                    page: page + 1,
+                },
+            };
+        });
+    }
+
+    const fetchRouterPlans = async (search, loadedOptions, { page }) => {
+        return http.get(`/get-router-plans/${serviceId}?q=${search}&page=${page}`).then(result => {
+
+            const res = result.data;
+
+            return {
+                options: res.options,
+                hasMore: res.has_more,
+                additional: {
+                    page: page + 1,
+                },
+            };
+        });
+    }
+
+    const formikPay = useFormik({
+        initialValues: {
+            invoice_id: formDataPay?.id ?? 0,
+            use_credit: false,
+            customer_id: formDataPay?.customer_id ?? null,
+            trans_id: '',
+            payment_type: { label: "Mpesa", value: "mpesa" },
+            date: '',
+            sum: formDataPay?.due ?? 0,
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            trans_id: Yup.string()
+                .when("use_credit", (use_credit) => {
+                    if (use_credit === false) return Yup.string().required("Please enter an mpesa transaction id. The field cannot be left blank.").min(10, 'Invalid code, enter a valid mpesa transaction code!');
+                }),
+            sum: Yup.number("Must be a number type")
+                .when("use_credit", (use_credit) => {
+                    if (use_credit === false) return Yup.number('Must be a number type').required("Please enter a sum. The field cannot be left blank.").moreThan(0, 'Invalid sum, only a value greater than 0 is allowed!');
+                }),
+            date: Yup.string()
+                .when("use_credit", (use_credit) => {
+                    if (use_credit === false) return Yup.string().required();
+                }),
+        }),
+        onSubmit: (data, { resetForm }) => {
+
+            setFormLoading(true);
+            http
+                .post(`/add-payment`, {
+                    invoice_id: data.invoice_id,
+                    use_credit: data.use_credit,
+                    customer_id: data.customer_id,
+                    trans_id: data.trans_id,
+                    payment_type: data.payment_type?.value,
+                    payment_date: data.date ? new Date(data.date).toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }) : data.date,
+                    sum: data.sum
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if ((response.data?.message && response.data?.error)) {
+                        execToast("top-right", response.data?.message);
+                    }
+                    else {
+                        setInvoiceId(0);
+                        successToast("top-right", response.data?.message);
+                        resetForm();
+                        togglePay();
+                        setReloadInvoices(!reloadInvoices);
+                        setCust(!cust);
+                        setReload(!reload);
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const formikMessage = useFormik({
+        initialValues: {
+            message_type: { label: "SMS", value: "sms" },
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object().shape({
+            message_type: Yup.object().shape({
+                value: Yup.string().required('Message type is required')
+            }),
+        }),
+        onSubmit: (data, { resetForm }) => {
+
+            setFormLoading(true);
+            http
+                .post(`/send-welcome-message`, {
+                    customer_id: id,
+                    message_type: data.message_type,
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if (response.data?.status) {
+                        successToast("top-right", response.data?.status);
+                        resetForm();
+                        toggleMessage();
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    const formikPassword = useFormik({
+        initialValues: {
+            password: '',
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            password: Yup.string('Enter your password')
+                .min(6, 'Password should be of minimum 6 characters length')
+                .max(30, 'Password should be of maximum 30 characters length')
+                .required('Password is required')
+        }),
+        onSubmit: (data, { resetForm }) => {
+
+            setFormLoading(true);
+            http
+                .post(`/reset-customer-password`, {
+                    customer_id: id,
+                    password: data.password,
+                })
+                .then(response => {
+                    setFormLoading(false);
+                    if (response.data?.status) {
+                        successToast("top-right", response.data?.status);
+                        resetForm();
+                        togglePassword();
+                    }
+                })
+                .catch(err => {
+                    setFormLoading(false);
+                    if (err.response.status === 422) {
+                        execToast("top-right", err.response.data[Object.keys(err.response.data)[0]][0]);
+                    } else {
+                        execToast("top-right", 'Something went wrong');
+                    }
+                })
+        }
+    });
+
+    return (
+        <>
+            <Head title={`${data?.name ?? "Customer"}`} />
+            <Content>
+                <BlockHead size="sm">
+                    <BlockBetween>
+                        <BlockHeadContent>
+                            <BlockTitle tag="h6" page className="fs-18">
+                                Customers / <strong className="text-primary">View</strong> /
+                            </BlockTitle>
+                            {data && Object.keys(data)?.length > 0 && <BlockDes className="text-soft">
+                                <ul className="list-inline">
+                                    <li><span className="large">{`${data.name} (${data.id})`}</span></li>
+                                </ul>
+                            </BlockDes>}
+                        </BlockHeadContent>
+                        <BlockHeadContent>
+                            <Button
+                                color="light"
+                                outline
+                                className="bg-white d-none d-sm-inline-flex"
+                                onClick={() => navigate(-1)}
+                            >
+                                <Icon name="arrow-left"></Icon>
+                                <span>Back</span>
+                            </Button>
+                            <a
+                                href="#back"
+                                onClick={(ev) => {
+                                    ev.preventDefault();
+                                    navigate(-1);
+                                }}
+                                className="btn btn-icon btn-outline-light bg-white d-inline-flex d-sm-none"
+                            >
+                                <Icon name="arrow-left"></Icon>
+                            </a>
+                        </BlockHeadContent>
+                    </BlockBetween>
+                </BlockHead>
+
+                <Block>
+                    <Nav tabs className="mt-n3 custom-tab">
+                        <NavItem className={classnames({ active: activeTab === "1" })}>
+                            <NavLink
+                                tag="a"
+                                href="#tab"
+                                onClick={(ev) => {
+                                    ev.preventDefault();
+                                    toggle("1");
+                                }}
+                            >
+                                Information
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className={classnames({ active: activeTab === "2" })}>
+                            <NavLink
+                                tag="a"
+                                href="#tab"
+                                onClick={(ev) => {
+                                    ev.preventDefault();
+                                    toggle("2");
+                                }}
+                            >
+                                Services
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className={classnames({ active: activeTab === "3" })}>
+                            <NavLink
+                                tag="a"
+                                href="#tab"
+                                onClick={(ev) => {
+                                    ev.preventDefault();
+                                    toggle("3");
+                                }}
+                            >
+                                Invoices
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className={classnames({ active: activeTab === "4" })}>
+                            <NavLink
+                                tag="a"
+                                href="#tab"
+                                onClick={(ev) => {
+                                    ev.preventDefault();
+                                    toggle("4");
+                                }}
+                            >
+                                Statistics
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                    <div className="tab-preview">
+                        <TabContent activeTab={activeTab}>
+                            <TabPane tabId="1" className="tab-content-inner">
+                                {apiLoading ? <div className="ps-20 pe-20">Loading...</div> :
+                                    <>
+                                        <form className="is-alter custom-form" onSubmit={formik.handleSubmit}>
+                                            <FocusError formik={formik} />
+                                            <div className="customer-buttons-sidebar-wrapper sticky-sidebar">
+                                                <div className="customer-name-wrapper">
+                                                    <span className="customer-billing-balance-title">
+                                                        Account balance: <b className="customer-balance" data-balance-id="5">KES {data?.balance ?? 0.00}</b>
+                                                    </span>
+                                                </div>
+                                                <div className="customer-buttons-wrapper">
+                                                    <Dropdown isOpen={open} className="btn-group" toggle={toggleAction}>
+                                                        <DropdownToggle
+                                                            tag="button"
+                                                            className="btn btn-outline-dark dropdown-toggle dropend"
+                                                            onClick={(ev) => {
+                                                                ev.preventDefault();
+                                                            }}
+                                                        >
+                                                            <span>Actions</span>
+                                                            <em className="icon ni ni-chevron-down" style={{ paddingLeft: '0' }}></em>
+                                                        </DropdownToggle>
+                                                        <DropdownMenu>
+                                                            <ul className="link-list">
+                                                                <li>
+                                                                    <a href={undefined} onClick={(ev) => {
+                                                                        ev.preventDefault();
+                                                                        toggleAction();
+                                                                        toggleMessage();
+                                                                    }}>
+                                                                        Send welcome message
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </DropdownMenu>
+                                                    </Dropdown>
+                                                    <div className="btn-group">
+                                                        <button type="submit" className="btn btn-primary">
+                                                            {loading ? <Spinner size="sm" color="light" /> : "Save"}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="card-block">
+                                                <div className="gy-3">
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label">
+                                                                    Billing type
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <RSelect name="billing_type" options={billingTypeOptions} value={formik.values.billing_type}
+                                                                        onChange={(option) => formik.setFieldValue("billing_type", option)} />
+                                                                    {formik.touched.billing_type && formik.errors.billing_type ? (<p className="invalid">{formik.errors.billing_type}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label">
+                                                                    Category
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <RSelect options={categoryOptions} value={formik.values.category}
+                                                                        onChange={(option) => formik.setFieldValue("category", option)} />
+                                                                    {formik.touched.category && formik.errors.category ? (<p className="invalid">{formik.errors.category}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="name">
+                                                                    Full name
+                                                                    <span className="text-secondary">&nbsp;(required)</span>
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="name"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.name && formik.errors.name
+                                                                            }
+                                                                        )}
+                                                                        name="name"
+                                                                        value={formik.values.name}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.name && formik.errors.name ? (<p className="invalid">{formik.errors.name}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="email">
+                                                                    Email
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="email"
+                                                                        id="email"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.email && formik.errors.email
+                                                                            }
+                                                                        )}
+                                                                        name="email"
+                                                                        value={formik.values.email}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.email && formik.errors.email ? (<p className="invalid">{formik.errors.email}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="phone_number">
+                                                                    Phone number
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="phone_number"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.phone_number && formik.errors.phone_number
+                                                                            }
+                                                                        )}
+                                                                        name="phone_number"
+                                                                        value={formik.values.phone_number}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.phone_number && formik.errors.phone_number ? (<p className="invalid">{formik.errors.phone_number}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="password">
+                                                                    Password
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <input type="button" className="btn btn-outline-primary btn-password" value="Reset" onClick={(ev) => {
+                                                                ev.preventDefault();
+                                                                togglePassword();
+                                                            }} />
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="dob">
+                                                                    Date of birth
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="dob"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.dob && formik.errors.dob
+                                                                            }
+                                                                        )}
+                                                                        name="dob"
+                                                                        value={formik.values.dob}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.dob && formik.errors.dob ? (<p className="invalid">{formik.errors.dob}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="address">
+                                                                    Address
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="address"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.address && formik.errors.address
+                                                                            }
+                                                                        )}
+                                                                        name="address"
+                                                                        value={formik.values.address}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.address && formik.errors.address ? (<p className="invalid">{formik.errors.address}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="align-center">
+                                                        <Col md="4" className="col-form-label">
+                                                            <div className="form-group">
+                                                                <label className="form-label" htmlFor="city">
+                                                                    City
+                                                                </label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md="8">
+                                                            <div className="form-group">
+                                                                <div className="form-control-wrap">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="city"
+                                                                        className={classnames(
+                                                                            'form-control',
+                                                                            {
+                                                                                'is-invalid': formik.touched.city && formik.errors.city
+                                                                            }
+                                                                        )}
+                                                                        name="city"
+                                                                        value={formik.values.city}
+                                                                        onChange={formik.handleChange}
+                                                                    />
+                                                                    {formik.touched.city && formik.errors.city ? (<p className="invalid">{formik.errors.city}</p>) : null}
+                                                                </div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col md="12">
+                                                            <div className="form-group mt-2">
+                                                                <Button type="submit" color="primary" className="pull-right">
+                                                                    {loading ? <Spinner size="sm" color="light" /> : "Save"}
+                                                                </Button>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div className="card-block mt-3">
+                                            <div className="gy-3">
+                                                <div className="card-block-header d-flex justify-content-between" style={{ borderBottom: '1px solid rgba(160, 175, 185, 0.15)' }}>
+                                                    <div>Account Balance: <strong>{data?.balance ?? 0}</strong></div>
+                                                    <Link to={`/admin/credit/${id}`} className="btn btn-sm btn-primary">
+                                                        <Icon name="plus"></Icon>
+                                                        <span>Add/Deduct</span>
+                                                    </Link>
+                                                </div>
+                                                <div className="card-block-body">
+                                                    <div className="timeline">
+                                                        {
+                                                            data && data.balances?.map((item) => (
+                                                                <div className="tl-item" key={item.id}>
+                                                                    <div className={"tl-dot " + (item.amount < 0 ? 'border-danger' : 'border-success')}>
+                                                                    </div>
+                                                                    <div className="tl-content">
+                                                                        <div>
+                                                                            <span style={{ color: '#6576ff' }}>Credits: {Math.abs(item.amount)}</span>
+                                                                            <span> - {item.reason}</span>
+                                                                        </div>
+                                                                        <small className="text-muted"><TimeAgo date={item.created_at} locale="en-US" /> ({dateFormat(item.created_at, "mmmm dS, yyyy HH:MM")})</small>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
+                            </TabPane>
+                            <TabPane tabId="2" className="tab-content-inner">
+                                <div className="text-end pb-2">
+                                    <div className="btn btn-primary" onClick={() => toggleAdd()}>
+                                        <span>Add service</span>
+                                    </div>
+                                </div>
+                                <div className="dataTables_wrapper dt-bootstrap4 no-footer">
+                                    <Row className="justify-between g-2 with-export">
+                                        <Col className="col-7 text-start" sm="4">
+                                            <div id="DataTables_Table_0_filter" className="dataTables_filter">
+                                                <label>
+                                                    <input
+                                                        type="search"
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Table search"
+                                                        onChange={(ev) => {
+                                                            setSearchText(ev.target.value);
+                                                            setPage(1);
+                                                        }
+                                                        }
+                                                    />
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col className="col-5 text-end" sm="8">
+                                            <div className="datatable-filter">
+                                                <div className="d-flex justify-content-end g-2">
+                                                    <Export data={data} />
+                                                    <div className="dataTables_length" id="DataTables_Table_0_length">
+                                                        <label>
+                                                            <span className="d-none d-sm-inline-block">Show</span>
+                                                            <div className="form-control-select">
+                                                                {" "}
+                                                                <select
+                                                                    name="DataTables_Table_0_length"
+                                                                    className="custom-select custom-select-sm form-control form-control-sm"
+                                                                    onChange={(e) => handlePerRowsChange(e, perPage)}
+                                                                    value={perPage}
+                                                                >
+                                                                    <option value="10">10</option>
+                                                                    <option value="25">25</option>
+                                                                    <option value="40">40</option>
+                                                                    <option value="50">50</option>
+                                                                </select>{" "}
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <DataTable
+                                        data={dataServices}
+                                        columns={columns}
+                                        defaultSortFieldId={1}
+                                        defaultSortAsc={true}
+                                        sortServer
+                                        onSort={handleSort}
+                                        progressPending={api2Loading}
+                                        //selectableRows={true}
+                                        //selectableRowsComponent={CustomCheckbox}
+                                        //clearSelectedRows={toggleCleared}
+                                        //expandableRowsComponent={ExpandableRowComponent}
+                                        //expandableRows
+                                        noDataComponent={<div className="p-2">There are no records found</div>}
+                                        sortIcon={
+                                            <div>
+                                                <span>&darr;</span>
+                                                <span>&uarr;</span>
+                                            </div>
+                                        }
+                                        pagination={true}
+                                        paginationServer
+                                        paginationComponent={({ currentPage, rowsPerPage, rowCount, onChangePage, onChangeRowsPerPage }) => (
+                                            <DataTablePagination
+                                                customItemPerPage={perPage}
+                                                itemPerPage={perPage}
+                                                totalItems={totalRows}
+                                                paginate={handlePageChange}
+                                                currentPage={page}
+                                                onChangeRowsPerPage={handlePerRowsChange}
+                                                setRowsPerPage={setPerPage}
+                                            />
+                                        )}
+                                    ></DataTable>
+                                </div>
+                            </TabPane>
+                            <TabPane tabId="3" className="tab-content-inner">
+                                <div className="text-end pb-2">
+                                    <div className="btn btn-primary" onClick={() => toggleGenerateInvoice()}>
+                                        <span>Generate invoice</span>
+                                    </div>
+                                </div>
+                                <div className="dataTables_wrapper dt-bootstrap4 no-footer">
+                                    <Row className="justify-between g-2 with-export">
+                                        <Col className="col-7 text-start" sm="4">
+                                            <div id="DataTables_Table_1_filter" className="dataTables_filter">
+                                                <label>
+                                                    <input
+                                                        type="search"
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Search by name"
+                                                        onChange={(ev) => {
+                                                            setSearchTextInvoices(ev.target.value);
+                                                            setPageInvoices(1);
+                                                        }
+                                                        }
+                                                    />
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col className="col-5 text-end" sm="8">
+                                            <div className="datatable-filter">
+                                                <div className="d-flex justify-content-end g-2">
+                                                    <Export data={dataInvoices} />
+                                                    <div className="dataTables_length" id="DataTables_Table_1_length">
+                                                        <label>
+                                                            <span className="d-none d-sm-inline-block">Show</span>
+                                                            <div className="form-control-select">
+                                                                {" "}
+                                                                <select
+                                                                    name="DataTables_Table_1_length"
+                                                                    className="custom-select custom-select-sm form-control form-control-sm"
+                                                                    onChange={(e) => handlePerRowsChangeInvoices(e, perPageInvoices)}
+                                                                    value={perPageInvoices}
+                                                                >
+                                                                    <option value="10">10</option>
+                                                                    <option value="25">25</option>
+                                                                    <option value="40">40</option>
+                                                                    <option value="50">50</option>
+                                                                </select>{" "}
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <DataTable
+                                        data={dataInvoices}
+                                        columns={columnsInvoices}
+                                        defaultSortFieldId={1}
+                                        defaultSortAsc={true}
+                                        sortServer
+                                        onSort={handleSortInvoices}
+                                        progressPending={apiInvoicesLoading}
+                                        //selectableRows={true}
+                                        //selectableRowsComponent={CustomCheckbox}
+                                        //clearSelectedRows={toggleCleared}
+                                        //expandableRowsComponent={ExpandableRowComponent}
+                                        //expandableRows
+                                        noDataComponent={<div className="p-2">There are no records found</div>}
+                                        sortIcon={
+                                            <div>
+                                                <span>&darr;</span>
+                                                <span>&uarr;</span>
+                                            </div>
+                                        }
+                                        pagination={true}
+                                        paginationServer
+                                        paginationComponent={({ currentPage, rowsPerPage, rowCount, onChangePage, onChangeRowsPerPage }) => (
+                                            <DataTablePagination
+                                                customItemPerPage={perPageInvoices}
+                                                itemPerPage={perPageInvoices}
+                                                totalItems={totalRowsInvoices}
+                                                paginate={handlePageChangeInvoices}
+                                                currentPage={pageInvoices}
+                                                onChangeRowsPerPage={handlePerRowsChangeInvoices}
+                                                setRowsPerPage={setPerPageInvoices}
+                                            />
+                                        )}
+                                    ></DataTable>
+                                </div>
+                            </TabPane>
+                            <TabPane tabId="4" className="tab-content-inner">
+                                <StatsTab customer_id={id} />
+                            </TabPane>
+                        </TabContent>
+                    </div>
+                </Block>
+            </Content>
+
+            <Modal isOpen={modal} toggle={toggleAdd} className="modal-md">
+                <ModalHeader toggle={toggleAdd}>Create service</ModalHeader>
+                <ModalBody>
+                    <form className="gy-3 is-alter custom-form" onSubmit={formikAdd.handleSubmit}>
+                        <FocusError formik={formikAdd} />
+                        <Row className="align-center">
+                            <Col md="4" className="col-form-label">
+                                <div className="form-group">
+                                    <label className="form-label">
+                                        Plan
+                                    </label>
+                                </div>
+                            </Col>
+                            <Col md="8">
+                                <div className="form-group">
+                                    <div className="form-control-wrap">
+                                        <div className="form-control-select">
+                                            <AsyncPaginate
+                                                className={`react-select-container`}
+                                                classNamePrefix="react-select"
+                                                cacheOptions
+                                                defaultOptions
+                                                getOptionLabel={e => e.title}
+                                                getOptionValue={e => e.id}
+                                                loadOptions={fetchPlans}
+                                                value={formikAdd.values.plan}
+                                                placeholder="Select plan"
+                                                //onInputChange={(value) => console.log(value)}
+                                                onChange={
+                                                    (option) => {
+                                                        formikAdd.setFieldValue("plan", option);
+                                                        formikAdd.setFieldValue("price", option?.price);
+                                                    }
+                                                }
+                                                additional={{
+                                                    page: 1,
+                                                }}
+                                            />
+                                        </div>
+                                        {formikAdd.touched.plan && formikAdd.errors.plan ? (<p className="invalid">{formikAdd.errors.plan?.id}</p>) : null}
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        {formikAdd.values.plan !== '' &&
+                            <>
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="installation">
+                                                New installation
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="custom-control custom-checkbox notext">
+                                                <input
+                                                    type="checkbox"
+                                                    className="custom-control-input"
+                                                    id="installation"
+                                                    name="installation"
+                                                    key={Math.random()}
+                                                    onChange={(e) => {
+                                                        formikAdd.setFieldValue("installation", e.currentTarget.checked);
+                                                    }}
+                                                    checked={formikAdd.values.installation}
+                                                />
+                                                <label className="custom-control-label" htmlFor="installation"></label>
+                                                {formikAdd.touched.installation && formikAdd.errors.installation ? (<p className="invalid">{formikAdd.errors.installation}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="generate_invoice">
+                                                Generate invoice
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="custom-control custom-checkbox notext">
+                                                <input
+                                                    type="checkbox"
+                                                    className="custom-control-input"
+                                                    id="generate_invoice"
+                                                    name="generate_invoice"
+                                                    key={Math.random()}
+                                                    onChange={(e) => {
+                                                        formikAdd.setFieldValue("generate_invoice", e.currentTarget.checked);
+                                                    }}
+                                                    checked={formikAdd.values.generate_invoice}
+                                                />
+                                                <label className="custom-control-label" htmlFor="generate_invoice"></label>
+                                                {formikAdd.touched.generate_invoice && formikAdd.errors.generate_invoice ? (<p className="invalid">{formikAdd.errors.generate_invoice}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                {formikAdd.values.generate_invoice && <Row className="align-center">
+                                    <Col md="8" className="offset-md-4">
+                                        <div className="form-group">
+                                            Available Credit: <strong>{data?.balance ?? 0}</strong>
+                                        </div>
+                                    </Col>
+                                </Row>}
+
+                                {data?.balance > 0 && formikAdd.values.generate_invoice && <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="use_credit">
+                                                Use credit
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="custom-control custom-checkbox notext">
+                                                <input
+                                                    type="checkbox"
+                                                    className="custom-control-input"
+                                                    id="use_credit"
+                                                    name="use_credit"
+                                                    key={Math.random()}
+                                                    onChange={(e) => {
+                                                        formikAdd.setFieldValue("use_credit", e.currentTarget.checked);
+                                                    }}
+                                                    checked={formikAdd.values.use_credit}
+                                                />
+                                                <label className="custom-control-label" htmlFor="use_credit"></label>
+                                                {formikAdd.touched.use_credit && formikAdd.errors.use_credit ? (<p className="invalid">{formikAdd.errors.use_credit}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>}
+
+                                {formikAdd.values.generate_invoice && <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="due_date">
+                                                Invoice due date
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <div className="form-icon form-icon-left">
+                                                    <Icon name="calendar"></Icon>
+                                                </div>
+                                                <DatePicker
+                                                    selected={formikAdd.values.due_date}
+                                                    className={classnames(
+                                                        'form-control date-picker',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.due_date && formikAdd.errors.due_date
+                                                        }
+                                                    )}
+                                                    onChange={(date) => formikAdd.setFieldValue("due_date", date)}
+                                                    name="due_date"
+                                                    dateFormat="dd/MM/yyyy"
+                                                    customInput={<ExampleCustomInput>{formikAdd.touched.due_date && formikAdd.errors.due_date ? (<p className="invalid">{formikAdd.errors.due_date}</p>) : null}</ExampleCustomInput>}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>}
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="mikrotik_name">
+                                                Mikrotik name
+                                                <span className="text-secondary">&nbsp;(required)</span>
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="text"
+                                                    id="mikrotik_name"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.mikrotik_name && formikAdd.errors.mikrotik_name
+                                                        }
+                                                    )}
+                                                    name="mikrotik_name"
+                                                    value={formikAdd.values.mikrotik_name}
+                                                    onChange={formikAdd.handleChange}
+                                                />
+                                                {formikAdd.touched.mikrotik_name && formikAdd.errors.mikrotik_name ? (<p className="invalid">{formikAdd.errors.mikrotik_name}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="mikrotik_password">
+                                                Mikrotik password
+                                                <span className="text-secondary">&nbsp;(required)</span>
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="password"
+                                                    id="mikrotik_password"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.mikrotik_password && formikAdd.errors.mikrotik_password
+                                                        }
+                                                    )}
+                                                    name="mikrotik_password"
+                                                    value={formikAdd.values.mikrotik_password}
+                                                    onChange={formikAdd.handleChange}
+                                                />
+                                                {formikAdd.touched.mikrotik_password && formikAdd.errors.mikrotik_password ? (<p className="invalid">{formikAdd.errors.mikrotik_password}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                {formikAdd.values.installation && formikAdd.values.generate_invoice && <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="installation_fee">
+                                                Installation fee
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="number"
+                                                    id="installation_fee"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.installation_fee && formikAdd.errors.installation_fee
+                                                        }
+                                                    )}
+                                                    name="installation_fee"
+                                                    value={formikAdd.values.installation_fee}
+                                                    onChange={formikAdd.handleChange}
+                                                />
+                                                {formikAdd.touched.installation_fee && formikAdd.errors.installation_fee ? (<p className="invalid">{formikAdd.errors.installation_fee}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>}
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="price">
+                                                Price
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="number"
+                                                    id="price"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.price && formikAdd.errors.price
+                                                        }
+                                                    )}
+                                                    name="price"
+                                                    value={formikAdd.values.price}
+                                                    onChange={formikAdd.handleChange}
+                                                />
+                                                {formikAdd.touched.price && formikAdd.errors.price ? (<p className="invalid">{formikAdd.errors.price}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="start_date">
+                                                Start date
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <div className="form-icon form-icon-left">
+                                                    <Icon name="calendar"></Icon>
+                                                </div>
+                                                <DatePicker
+                                                    selected={formikAdd.values.start_date}
+                                                    className={classnames(
+                                                        'form-control date-picker',
+                                                        {
+                                                            'is-invalid': formikAdd.touched.start_date && formikAdd.errors.start_date
+                                                        }
+                                                    )}
+                                                    onChange={(date) => formikAdd.setFieldValue("start_date", date)}
+                                                    name="start_date"
+                                                    dateFormat="dd/MM/yyyy"
+                                                    customInput={<ExampleCustomInput>{formikAdd.touched.start_date && formikAdd.errors.start_date ? (<p className="invalid">{formikAdd.errors.start_date}</p>) : null}</ExampleCustomInput>}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="end_date">
+                                                End date
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <div className="form-icon form-icon-left">
+                                                    <Icon name="calendar"></Icon>
+                                                </div>
+                                                <DatePicker
+                                                    selected={formikAdd.values.end_date}
+                                                    className="form-control date-picker"
+                                                    onChange={(date) => formikAdd.setFieldValue("end_date", date)}
+                                                    name="end_date"
+                                                    dateFormat="dd/MM/yyyy"
+                                                    customInput={<ExampleCustomInput >{formikAdd.touched.end_date && formikAdd.errors.end_date ? (<p className="invalid">{formikAdd.errors.end_date}</p>) : null}</ExampleCustomInput>}
+                                                />
+
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Billing type
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <RSelect name="billing_type" options={billingTypeOptions} value={formikAdd.values.billing_type}
+                                                    onChange={(option) => formikAdd.setFieldValue("billing_type", option)} />
+                                                {formikAdd.touched.billing_type && formikAdd.errors.billing_type ? (<p className="invalid">{formikAdd.errors.billing_type}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Billing period
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <RSelect name="billing_period" options={billingPeriodOptions} value={formikAdd.values.billing_period}
+                                                    onChange={
+                                                        (option) => {
+                                                            formikAdd.setFieldValue("billing_period", option);
+                                                            if (option.value == 1 || option.value == 2) {
+                                                                formikAdd.setFieldValue("bill_to", addWeeks(new Date(), option.value));
+                                                            } else if (option.value == 3) {
+                                                                formikAdd.setFieldValue("bill_to", addMonths(new Date(), 1));
+                                                            }
+                                                        }
+                                                    } />
+                                                {formikAdd.touched.billing_period && formikAdd.errors.billing_period ? (<p className="invalid">{formikAdd.errors.billing_period}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="bill_to">
+                                                Bill to
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <div className="form-icon form-icon-left">
+                                                    <Icon name="calendar"></Icon>
+                                                </div>
+                                                <DatePicker
+                                                    selected={formikAdd.values.bill_to}
+                                                    className="form-control date-picker"
+                                                    onChange={(date) => formikAdd.setFieldValue("bill_to", date)}
+                                                    name="bill_to"
+                                                    dateFormat="dd/MM/yyyy"
+                                                    customInput={<ExampleCustomInput >{formikAdd.touched.bill_to && formikAdd.errors.bill_to ? (<p className="invalid">{formikAdd.errors.bill_to}</p>) : null}</ExampleCustomInput>}
+                                                />
+
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Status
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <RSelect name="status" options={serviceOptions} value={formikAdd.values.status}
+                                                    onChange={(option) => formikAdd.setFieldValue("status", option)} />
+                                                {formikAdd.touched.status && formikAdd.errors.status ? (<p className="invalid">{formikAdd.errors.status}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </>
+                        }
+                        <Row>
+                            <Col md="12">
+                                <div className="form-group mt-2">
+                                    <Button type="submit" color="primary" className="pull-right">
+                                        {formLoading ? <Spinner size="sm" color="light" /> : "Add"}
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            toggleAdd();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={editModal} toggle={toggleEdit} className="modal-md">
+                <ModalHeader toggle={toggleEdit}>Edit service</ModalHeader>
+                <ModalBody>
+                    {api3Loading ? <p>Loading...</p> :
+                        <form className="gy-3 is-alter custom-form" onSubmit={formikEdit.handleSubmit}>
+                            <input
+                                type="hidden"
+                                id="id"
+                                readOnly
+                                value={formikEdit.values.id}
+                            />
+                            <FocusError formik={formikEdit} />
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label">
+                                            Plan
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="form-control-wrap">
+                                            <AsyncPaginate
+                                                className={`react-select-container`}
+                                                classNamePrefix="react-select"
+                                                cacheOptions
+                                                defaultOptions
+                                                getOptionLabel={e => e.title}
+                                                getOptionValue={e => e.id}
+                                                loadOptions={fetchRouterPlans}
+                                                value={formikEdit.values.plan}
+                                                placeholder="Select plan"
+                                                //onInputChange={(value) => console.log(value)}
+                                                onChange={
+                                                    (option) => {
+                                                        formikEdit.setFieldValue("plan", option);
+                                                        formikEdit.setFieldValue("price", option?.price);
+                                                    }
+                                                }
+                                                additional={{
+                                                    page: 1,
+                                                }}
+                                            //isDisabled={true}
+                                            />
+                                            {formikEdit.touched.plan && formikEdit.errors.plan ? (<p className="invalid">{formikEdit.errors.plan}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                            {formikEdit.values.plan !== '' &&
+                                <>
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="mikrotik_name">
+                                                    Mikrotik name
+                                                    <span className="text-secondary">&nbsp;(required)</span>
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <input
+                                                        type="text"
+                                                        id="mikrotik_name"
+                                                        className={classnames(
+                                                            'form-control',
+                                                            {
+                                                                'is-invalid': formikEdit.touched.mikrotik_name && formikEdit.errors.mikrotik_name
+                                                            }
+                                                        )}
+                                                        name="mikrotik_name"
+                                                        value={formikEdit.values.mikrotik_name}
+                                                        onChange={formikEdit.handleChange}
+                                                    />
+                                                    {formikEdit.touched.mikrotik_name && formikEdit.errors.mikrotik_name ? (<p className="invalid">{formikEdit.errors.mikrotik_name}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="mikrotik_password">
+                                                    Mikrotik password
+                                                    <span className="text-secondary">&nbsp;(required)</span>
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <input
+                                                        type="password"
+                                                        id="mikrotik_password"
+                                                        className={classnames(
+                                                            'form-control',
+                                                            {
+                                                                'is-invalid': formikEdit.touched.mikrotik_password && formikEdit.errors.mikrotik_password
+                                                            }
+                                                        )}
+                                                        name="mikrotik_password"
+                                                        value={formikEdit.values.mikrotik_password}
+                                                        onChange={formikEdit.handleChange}
+                                                    />
+                                                    {formikEdit.touched.mikrotik_password && formikEdit.errors.mikrotik_password ? (<p className="invalid">{formikEdit.errors.mikrotik_password}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="price">
+                                                    Price
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <input
+                                                        type="number"
+                                                        id="price"
+                                                        className={classnames(
+                                                            'form-control',
+                                                            {
+                                                                'is-invalid': formikEdit.touched.price && formikEdit.errors.price
+                                                            }
+                                                        )}
+                                                        name="price"
+                                                        value={formikEdit.values.price}
+                                                        onChange={formikEdit.handleChange}
+                                                    />
+                                                    {formikEdit.touched.price && formikEdit.errors.price ? (<p className="invalid">{formikEdit.errors.price}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="start_date">
+                                                    Start date
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <div className="form-icon form-icon-left">
+                                                        <Icon name="calendar"></Icon>
+                                                    </div>
+                                                    <DatePicker
+                                                        selected={formikEdit.values.start_date}
+                                                        className="form-control date-picker"
+                                                        onChange={(date) => formikEdit.setFieldValue("start_date", date)}
+                                                        name="start_date"
+                                                        dateFormat="dd/MM/yyyy"
+                                                        customInput={<ExampleCustomInput >{formikEdit.touched.start_date && formikEdit.errors.start_date ? (<p className="invalid">{formikEdit.errors.start_date}</p>) : null}</ExampleCustomInput>}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="end_date">
+                                                    End date
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <div className="form-icon form-icon-left">
+                                                        <Icon name="calendar"></Icon>
+                                                    </div>
+                                                    <DatePicker
+                                                        selected={formikEdit.values.end_date}
+                                                        className="form-control date-picker"
+                                                        onChange={(date) => formikEdit.setFieldValue("end_date", date)}
+                                                        name="end_date"
+                                                        dateFormat="dd/MM/yyyy"
+                                                        customInput={<ExampleCustomInput >{formikEdit.touched.end_date && formikEdit.errors.end_date ? (<p className="invalid">{formikEdit.errors.end_date}</p>) : null}</ExampleCustomInput>}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label">
+                                                    Billing type
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <RSelect name="billing_type" options={billingTypeOptions} value={formikEdit.values.billing_type}
+                                                        onChange={(option) => formikEdit.setFieldValue("billing_type", option)} />
+                                                    {formikEdit.touched.billing_type && formikEdit.errors.billing_type ? (<p className="invalid">{formikEdit.errors.billing_type}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label">
+                                                    Billing period
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <RSelect name="billing_period" options={billingPeriodOptions} value={formikEdit.values.billing_period}
+                                                        onChange={(option) => formikEdit.setFieldValue("billing_period", option)} />
+                                                    {formikEdit.touched.billing_period && formikEdit.errors.billing_period ? (<p className="invalid">{formikEdit.errors.billing_period}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="bill_to">
+                                                    Bill to
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <div className="form-icon form-icon-left">
+                                                        <Icon name="calendar"></Icon>
+                                                    </div>
+                                                    <DatePicker
+                                                        selected={formikEdit.values.bill_to}
+                                                        className="form-control date-picker"
+                                                        onChange={(date) => formikEdit.setFieldValue("bill_to", date)}
+                                                        name="bill_to"
+                                                        dateFormat="dd/MM/yyyy"
+                                                        customInput={<ExampleCustomInput >{formikEdit.touched.bill_to && formikEdit.errors.bill_to ? (<p className="invalid">{formikEdit.errors.bill_to}</p>) : null}</ExampleCustomInput>}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="align-center">
+                                        <Col md="4" className="col-form-label">
+                                            <div className="form-group">
+                                                <label className="form-label">
+                                                    Status
+                                                </label>
+                                            </div>
+                                        </Col>
+                                        <Col md="8">
+                                            <div className="form-group">
+                                                <div className="form-control-wrap">
+                                                    <RSelect name="status" options={serviceOptions} value={formikEdit.values.status}
+                                                        onChange={(option) => formikEdit.setFieldValue("status", option)} />
+                                                    {formikEdit.touched.status && formikEdit.errors.status ? (<p className="invalid">{formikEdit.errors.status}</p>) : null}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </>
+                            }
+                            <Row>
+                                <Col md="12">
+                                    <div className="form-group mt-2">
+                                        <Button type="submit" color="primary" className="pull-right">
+                                            {formLoading ? <Spinner size="sm" color="light" /> : "Save"}
+                                        </Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </form>
+                    }
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            toggleEdit();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={payModal} toggle={togglePay} className="modal-md">
+                <ModalHeader toggle={togglePay}>Add payment</ModalHeader>
+                <ModalBody>
+                    {apiPayLoading ? <p>Loading...</p> :
+                        <form className="gy-3" onSubmit={formikPay.handleSubmit}>
+                            <p>Invoice number: {formikPay.values.invoice_id}</p>
+                            <FocusError formik={formikPay} />
+                            <Row className="align-center">
+                                <Col md="8" className="offset-md-4">
+                                    <div className="form-group">
+                                        Available Credit: <strong>{data?.balance ?? 0}</strong>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            {data?.balance > 0 && <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="use_credit">
+                                            Use credit
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="custom-control custom-checkbox notext">
+                                            <input
+                                                type="checkbox"
+                                                className="custom-control-input"
+                                                id="use_credit"
+                                                name="use_credit"
+                                                key={Math.random()}
+                                                onChange={(e) => {
+                                                    formikPay.setFieldValue("use_credit", e.currentTarget.checked);
+                                                }}
+                                                checked={formikPay.values.use_credit}
+                                            />
+                                            <label className="custom-control-label" htmlFor="use_credit"></label>
+                                            {formikPay.touched.use_credit && formikPay.errors.use_credit ? (<p className="invalid">{formikPay.errors.use_credit}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>}
+
+                            {!formikPay.values.use_credit && <>
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                Payment type
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <RSelect name="payment_type" options={paymentOptions} value={formikPay.values.payment_type}
+                                                    onChange={(option) => formikPay.setFieldValue("payment_type", option)} />
+                                                {formikPay.touched.payment_type && formikPay.errors.payment_type ? (<p className="invalid" style={{ color: '#e85347', fontSize: '11px', fontStyle: 'italic' }}>{formikPay.errors.payment_type}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="trans_id">
+                                                Trans ID
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="text"
+                                                    id="trans_id"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikPay.touched.trans_id && formikPay.errors.trans_id
+                                                        }
+                                                    )}
+                                                    name="trans_id"
+                                                    value={formikPay.values.trans_id}
+                                                    onChange={formikPay.handleChange}
+                                                />
+                                                {formikPay.touched.trans_id && formikPay.errors.trans_id ? (<p className="invalid">{formikPay.errors.trans_id}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="date">
+                                                Date
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <DatePicker
+                                                    selected={formikPay.values.date}
+                                                    className="form-control date-picker"
+                                                    onChange={(date) => formikPay.setFieldValue("date", date)}
+                                                    name="date"
+                                                    dateFormat="dd/MM/yyyy"
+                                                    customInput={<ExampleCustomInput >{formikPay.touched.date && formikPay.errors.date ? (<p className="invalid" style={{ color: '#e85347', fontSize: '11px', fontStyle: 'italic' }}>{formikPay.errors.date}</p>) : null}</ExampleCustomInput>}
+                                                />
+
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row className="align-center">
+                                    <Col md="4" className="col-form-label">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="sum">
+                                                Sum
+                                            </label>
+                                        </div>
+                                    </Col>
+                                    <Col md="8">
+                                        <div className="form-group">
+                                            <div className="form-control-wrap">
+                                                <input
+                                                    type="number"
+                                                    id="sum"
+                                                    className={classnames(
+                                                        'form-control',
+                                                        {
+                                                            'is-invalid': formikPay.touched.sum && formikPay.errors.sum
+                                                        }
+                                                    )}
+                                                    name="sum"
+                                                    value={formikPay.values.sum}
+                                                    onChange={formikPay.handleChange}
+                                                />
+                                                {formikPay.touched.sum && formikPay.errors.sum ? (<p className="invalid">{formikPay.errors.sum}</p>) : null}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </>
+                            }
+
+                            <Row>
+                                <Col md="12">
+                                    <div className="form-group mt-2">
+                                        <Button type="submit" color="primary" className="pull-right">
+                                            {formLoading ? <Spinner size="sm" color="light" /> : "Pay"}
+                                        </Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </form>
+                    }
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            togglePay();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={generateInvoiceModal} toggle={toggleGenerateInvoice} className="modal-md">
+                <ModalHeader toggle={toggleGenerateInvoice}>Generate invoice</ModalHeader>
+                <ModalBody>
+                    {apiInvoiceLoading ? <p>Loading...</p> : formDataInvoice?.services?.length != 0 ?
+                        <form className="gy-3" onSubmit={formikGenerateInvoice.handleSubmit}>
+                            <FocusError formik={formikGenerateInvoice} />
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label">
+                                            Service
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="form-control-wrap">
+                                            <RSelect name="service" options={formDataInvoice.options} value={formikGenerateInvoice.values.service}
+                                                onChange={
+                                                    (option) => {
+                                                        formikGenerateInvoice.setFieldValue("service", option);
+                                                        let service = formDataInvoice.services.find(o => o.id === option.value);
+                                                        formikGenerateInvoice.setFieldValue("billing_period", service.billing_period);
+                                                        formikGenerateInvoice.setFieldValue("amount", service.formatted_price);
+                                                    }
+                                                } />
+                                            {formikGenerateInvoice.touched.service && formikGenerateInvoice.errors.service ? (<p className="invalid" style={{ color: '#e85347', fontSize: '11px', fontStyle: 'italic' }}>{formikGenerateInvoice.errors.service}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="send_sms">
+                                            Send SMS
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="custom-control custom-control-sm custom-checkbox notext">
+                                            <input
+                                                type="checkbox"
+                                                className="custom-control-input"
+                                                id="send_sms"
+                                                name="send_sms"
+                                                key={Math.random()}
+                                                onChange={(e) => {
+                                                    formikGenerateInvoice.setFieldValue("send_sms", e.currentTarget.checked);
+                                                }}
+                                                checked={formikGenerateInvoice.values.send_sms}
+                                            />
+                                            <label className="custom-control-label" htmlFor="send_sms"></label>
+                                            {formikGenerateInvoice.touched.send_sms && formikGenerateInvoice.errors.send_sms ? (<p className="invalid">{formikGenerateInvoice.errors.send_sms}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="date">
+                                            Due date
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="form-control-wrap">
+                                            <DatePicker
+                                                selected={formikGenerateInvoice.values.date}
+                                                className="form-control date-picker"
+                                                onChange={(date) => formikGenerateInvoice.setFieldValue("date", date)}
+                                                name="date"
+                                                dateFormat="dd/MM/yyyy"
+                                                customInput={<ExampleCustomInput >{formikGenerateInvoice.touched.date && formikGenerateInvoice.errors.date ? (<p className="invalid" style={{ color: '#e85347', fontSize: '11px', fontStyle: 'italic' }}>{formikGenerateInvoice.errors.date}</p>) : null}</ExampleCustomInput>}
+                                            />
+
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label">
+                                            Billing period
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="form-control-wrap">
+                                            <RSelect name="billing_period" options={billingPeriodOptions} value={formikGenerateInvoice.values.billing_period}
+                                                onChange={
+                                                    (option) => {
+                                                        formikGenerateInvoice.setFieldValue("billing_period", option)
+                                                        let service = formDataInvoice.services.find(o => o.id === formikGenerateInvoice.values.service.value);
+                                                        if(option.value == 1 || option.value == 2){
+                                                            formikGenerateInvoice.setFieldValue("amount", ((service.price/4)*option.value) + 50);
+                                                        }else{
+                                                            formikGenerateInvoice.setFieldValue("amount", service.price);
+                                                        }
+                                                    }
+                                                } />
+                                            {formikGenerateInvoice.touched.billing_period && formikGenerateInvoice.errors.billing_period ? (<p className="invalid" style={{ color: '#e85347', fontSize: '11px', fontStyle: 'italic' }}>{formikGenerateInvoice.errors.billing_period}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="align-center">
+                                <Col md="4" className="col-form-label">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="amount">
+                                            Amount
+                                        </label>
+                                    </div>
+                                </Col>
+                                <Col md="8">
+                                    <div className="form-group">
+                                        <div className="form-control-wrap">
+                                            <input
+                                                type="number"
+                                                id="amount"
+                                                className={classnames(
+                                                    'form-control',
+                                                    {
+                                                        'is-invalid': formikGenerateInvoice.touched.amount && formikGenerateInvoice.errors.amount
+                                                    }
+                                                )}
+                                                name="amount"
+                                                value={formikGenerateInvoice.values.amount}
+                                                onChange={formikGenerateInvoice.handleChange}
+                                            />
+                                            {formikGenerateInvoice.touched.amount && formikGenerateInvoice.errors.amount ? (<p className="invalid">{formikGenerateInvoice.errors.amount}</p>) : null}
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col md="12">
+                                    <div className="form-group mt-2">
+                                        <Button type="submit" color="primary" className="pull-right">
+                                            {formLoading ? <Spinner size="sm" color="light" /> : "Generate"}
+                                        </Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </form> : <div className="alert alert-warning alert-icon"><em className="icon ni ni-alert-circle"></em> There are no unbilled services for this customer.</div>
+                    }
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            toggleGenerateInvoice();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={messageModal} toggle={toggleMessage} className="modal-sm" backdrop="static">
+                <ModalHeader toggle={toggleMessage}>Send welcome message</ModalHeader>
+                <ModalBody>
+                    <form className="gy-3 is-alter custom-form" onSubmit={formikMessage.handleSubmit}>
+                        <FocusError formik={formikMessage} />
+                        <Row className="align-center">
+                            <Col md="4" className="col-form-label">
+                                <div className="form-group">
+                                    <label className="form-label">
+                                        Type
+                                    </label>
+                                </div>
+                            </Col>
+                            <Col md="8">
+                                <div className="form-group">
+                                    <div className="form-control-wrap">
+                                        <RSelect name="message_type" options={messageOptions} value={formikMessage.values.message_type}
+                                            onChange={(option) => formikMessage.setFieldValue("message_type", option)} />
+                                        {formikMessage.touched.message_type && formikMessage.errors.message_type ? (<p className="invalid">{formikMessage.errors.message_type}</p>) : null}
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="12">
+                                <div className="form-group mt-2">
+                                    <Button type="submit" color="primary" className="pull-right">
+                                        {formLoading ? <Spinner size="sm" color="light" /> : "Send"}
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            toggleMessage();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={passwordModal} toggle={togglePassword} className="modal-sm" backdrop="static">
+                <ModalHeader toggle={togglePassword}>Reset password</ModalHeader>
+                <ModalBody>
+                    <form className="is-alter custom-form" onSubmit={formikPassword.handleSubmit}>
+                        <FocusError formik={formikPassword} />
+                        <Row className="align-center">
+                            <Col md="4" className="col-form-label">
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="password">
+                                        Password
+                                    </label>
+                                </div>
+                            </Col>
+                            <Col md="8">
+                                <div className="form-group">
+                                    <div className="form-control-wrap">
+                                        <a
+                                            href="#password"
+                                            onClick={(ev) => {
+                                                ev.preventDefault();
+                                                setPassState(!passState);
+                                            }}
+                                            className={`form-icon form-icon-right passcode-switch ${passState ? "is-hidden" : "is-shown"}`}
+                                        >
+                                            <Icon name="eye" className="passcode-icon icon-show"></Icon>
+
+                                            <Icon name="eye-off" className="passcode-icon icon-hide"></Icon>
+                                        </a>
+                                        <input
+                                            type={passState ? "text" : "password"}
+                                            id="password"
+                                            name="password"
+                                            value={formikPassword.values.password}
+                                            onChange={formikPassword.handleChange}
+                                            placeholder="Enter your password"
+                                            className={classnames(
+                                                `form-control${passState ? " is-hidden" : " is-shown"}`,
+                                                {
+                                                    'is-invalid': formikPassword.touched.password && formikPassword.errors.password
+                                                }
+                                            )}
+                                        />
+                                        {formikPassword.touched.password && formikPassword.errors.password ? (<span className="invalid">{formikPassword.errors.password}</span>) : null}
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md="12">
+                                <div className="form-group mt-2">
+                                    <Button type="submit" color="primary" className="pull-right">
+                                        {formLoading ? <Spinner size="sm" color="light" /> : "Save"}
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        className="p-0 m-0"
+                        onClick={() => {
+                            togglePassword();
+                        }}
+                    >
+                        Close
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        </>
+    );
+};
+
+export default View;

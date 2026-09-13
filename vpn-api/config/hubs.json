@@ -1,0 +1,37 @@
+[
+  {
+    "id": "local",
+    "slug": "local",
+    "name": "Local hub (102.0.15.254)",
+    "host": "102.0.15.254",
+    "location_type": "local",
+    "local_management": true,
+    "wg_interface": "wg0",
+    "listen_port": 51820,
+    "subnet": "10.88.0.0/24",
+    "hub_tunnel_ip": "10.88.0.1",
+    "ssh_host": "102.0.15.254",
+    "ssh_user": "joram",
+    "ssh_port": 22,
+    "ssh_password_env": "VPN_LOCAL_SSH_PASSWORD",
+    "enabled": true,
+    "notes": "On-prem WireGuard hub — peers reach local MikroTik / OLT mgmt subnets."
+  },
+  {
+    "id": "cloud",
+    "slug": "cloud",
+    "name": "Cloud hub (78.159.111.191)",
+    "host": "78.159.111.191",
+    "location_type": "cloud",
+    "wg_interface": "wg0",
+    "listen_port": 51820,
+    "subnet": "10.89.0.0/24",
+    "hub_tunnel_ip": "10.89.0.1",
+    "ssh_host": "78.159.111.191",
+    "ssh_user": "root",
+    "ssh_port": 22,
+    "ssh_password_env": "VPN_CLOUD_SSH_PASSWORD",
+    "enabled": true,
+    "notes": "Cloud WireGuard hub for remote access and backup paths."
+  }
+]

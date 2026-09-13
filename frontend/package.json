@@ -1,0 +1,204 @@
+{
+  "name": "isp-app",
+  "homepage": "https://app.tonycommgroupltd.com",
+  "version": "0.2.5",
+  "private": true,
+  "main": "electron/main.js",
+  "description": "Tonycomm ISP Admin desktop app",
+  "author": "Tonycomm Group LTD",
+  "dependencies": {
+    "@fluentui/react-components": "^9.46.7",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fullcalendar/bootstrap5": "^5.11.3",
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/list": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@react-google-maps/api": "^2.17.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@tinymce/tinymce-react": "^3.9.0",
+    "@yaireo/tagify": "^4.10.0",
+    "axios": "^0.21.4",
+    "bootstrap": "^5.2.3",
+    "bootstrap-daterangepicker": "^3.1.0",
+    "chart.js": "^3.6.2",
+    "chartjs-adapter-luxon": "^1.1.0",
+    "chartjs-plugin-streaming": "^2.0.0",
+    "classnames": "^2.3.2",
+    "datatables.net": "^1.13.1",
+    "datatables.net-dt": "^1.13.1",
+    "date-fns": "^2.30.0",
+    "dateformat": "^5.0.3",
+    "electron-updater": "^6.8.9",
+    "exceljs": "^4.4.0",
+    "export-from-json": "^1.7.0",
+    "express": "^4.22.2",
+    "focus-formik-error": "^1.1.0",
+    "formik": "^2.2.9",
+    "gemoji": "^8.1.0",
+    "html-react-parser": "^1.4.14",
+    "html2canvas": "^1.4.1",
+    "http-proxy-middleware": "^2.0.10",
+    "jquery": "^3.7.1",
+    "jsonwebtoken": "^8.5.1",
+    "jspdf": "^2.5.2",
+    "jwt-decode": "^4.0.0",
+    "luxon": "^2.1.1",
+    "moment": "^2.30.1",
+    "nouislider-react": "^3.4.1",
+    "pretty-bytes": "^6.1.1",
+    "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-bootstrap-daterangepicker": "^8.0.0",
+    "react-chartjs-2": "^4.0.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-data-table-component": "^7.5.3",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^11.7.1",
+    "react-dual-listbox": "^2.3.0",
+    "react-helmet": "^6.1.0",
+    "react-hook-form": "^6.15.8",
+    "react-jstree-table": "^0.0.24",
+    "react-jvectormap": "0.0.16",
+    "react-modal-video": "^1.2.10",
+    "react-nl2br": "^1.0.4",
+    "react-quilljs": "^1.3.3",
+    "react-redux": "^7.2.5",
+    "react-router": "^5.3.0",
+    "react-router-dom": "^6.21.2",
+    "react-scripts": "^4.0.3",
+    "react-select": "^4.3.1",
+    "react-select-async-paginate": "^0.5.3",
+    "react-slick": "^0.29.0",
+    "react-step-builder": "^2.0.11",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-timeago": "^7.2.0",
+    "react-toastify": "^8.0.2",
+    "reactstrap": "^9.1.5",
+    "redux": "^4.1.1",
+    "redux-thunk": "^2.3.0",
+    "sass": "1.56.1",
+    "simplebar-react": "^2.4.3",
+    "slick-carousel": "^1.8.1",
+    "sms-length": "^0.2.0",
+    "socket.io-client": "^4.8.1",
+    "styled-components": "^5.3.6",
+    "sweetalert2": "^11.6.9",
+    "web-vitals": "^1.1.2",
+    "yup": "^0.32.9"
+  },
+  "scripts": {
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider&& set PORT=3001&& react-scripts start",
+    "build": "react-scripts build",
+    "build:cpanel": "set NODE_OPTIONS=--openssl-legacy-provider --max-old-space-size=2560&& set GENERATE_SOURCEMAP=false&& npx --yes env-cmd -f .env.cpanel react-scripts build",
+    "build:cpanel:production": "set NODE_OPTIONS=--openssl-legacy-provider --max-old-space-size=2560&& set GENERATE_SOURCEMAP=false&& npx --yes env-cmd -f .env.cpanel.production react-scripts build",
+    "build:acs": "set NODE_OPTIONS=--openssl-legacy-provider --max-old-space-size=2560&& set GENERATE_SOURCEMAP=false&& set PUBLIC_URL=/&& npx --yes env-cmd -f .env.acs react-scripts build",
+    "build:desktop": "set NODE_OPTIONS=--openssl-legacy-provider&& set PUBLIC_URL=/&& npx --yes env-cmd -f .env.desktop react-scripts build",
+    "electron:dev": "set ELECTRON_START_URL=http://127.0.0.1:3001&& electron .",
+    "electron:preview": "set ELECTRON_USE_BUILD=1&& electron .",
+    "electron:build": "set CSC_IDENTITY_AUTO_DISCOVERY=false&& npm run build:desktop && electron-builder --win nsis",
+    "electron:build:dir": "set CSC_IDENTITY_AUTO_DISCOVERY=false&& npm run build:desktop && electron-builder --win dir",
+    "electron:icons": "node electron/scripts/make-icons.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "build": {
+    "extends": null,
+    "appId": "com.tonycomm.isp-admin",
+    "productName": "Tonycomm ISP Admin",
+    "icon": "electron/resources/icon.ico",
+    "directories": {
+      "output": "release-desktop",
+      "buildResources": "electron/resources"
+    },
+    "files": [
+      "!**/*",
+      "build/**/*",
+      "electron/**/*",
+      "!electron/node_modules/**/*",
+      "!electron/package-lock.json",
+      "!electron/scripts/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "electron/node_modules",
+        "to": "node_modules",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "asar": true,
+    "electronDist": "node_modules/electron/dist",
+    "afterPack": "./electron/scripts/afterPack.js",
+    "win": {
+      "icon": "electron/resources/icon.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Tonycomm ISP Admin",
+      "installerIcon": "electron/resources/icon.ico",
+      "uninstallerIcon": "electron/resources/icon.ico",
+      "installerHeaderIcon": "electron/resources/icon.ico",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://isp.tonycommgroupltd.com/desktop/"
+      }
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "concurrently": "^9.2.4",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "env-cmd": "^10.1.0",
+    "png-to-ico": "^3.0.2",
+    "rcedit": "^5.0.2",
+    "sharp": "^0.35.3",
+    "wait-on": "^8.0.5"
+  }
+}

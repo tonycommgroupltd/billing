@@ -1,0 +1,340 @@
+.btc-page {
+  --btc-border: #e3e8ef;
+  --btc-muted: #8094ae;
+  --btc-text: #364a63;
+  --btc-bg: #f5f7fb;
+  --btc-card: #ffffff;
+  --btc-accent: #0fac81;
+  --btc-credit: #f4a020;
+}
+
+.btc-page .btc-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--btc-muted);
+}
+
+.btc-page .btc-blurb {
+  margin-top: 4px;
+  color: var(--btc-muted);
+  font-size: 13px;
+  max-width: 520px;
+}
+
+.btc-page .btc-head-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex: 0 0 auto;
+}
+
+.btc-page .btc-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btc-page .btc-mode-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: #edf1f7;
+  border: 1px solid var(--btc-border);
+}
+
+.btc-page .btc-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--btc-muted);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btc-page .btc-mode-btn:hover {
+  color: var(--btc-text);
+  text-decoration: none;
+}
+
+.btc-page .btc-mode-btn.is-active {
+  background: #fff;
+  color: var(--btc-text);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+}
+
+.btc-page .btc-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1199.98px) {
+  .btc-page .btc-stat-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .btc-page .btc-stat-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.btc-page .btc-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--btc-border);
+  background: var(--btc-card);
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.btc-page .btc-stat:hover {
+  border-color: #c9d4e4;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.btc-page .btc-stat.is-selected {
+  border-color: #6576ff;
+  box-shadow: 0 0 0 3px rgba(101, 118, 255, 0.12);
+}
+
+.btc-page .btc-stat.is-featured {
+  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 70%);
+  border-color: #f0c56d;
+}
+
+.btc-page .btc-stat.is-featured.is-selected {
+  border-color: var(--btc-credit);
+  box-shadow: 0 0 0 3px rgba(244, 160, 32, 0.18);
+}
+
+.btc-page .btc-stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--btc-muted);
+}
+
+.btc-page .btc-stat.is-featured .btc-stat-label {
+  color: #b7791f;
+}
+
+.btc-page .btc-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--btc-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.btc-page .btc-credit-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fff8eb;
+  border: 1px solid #f0d49a;
+  color: #7a5a14;
+  font-size: 13px;
+}
+
+.btc-page .btc-credit-count {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.btc-page .btc-table-card {
+  border: 1px solid var(--btc-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.btc-page .btc-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--btc-border);
+  background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+}
+
+.btc-page .btc-toolbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--btc-text);
+}
+
+.btc-page .btc-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btc-page .btc-toolbar-controls .form-select {
+  width: auto;
+  min-width: 140px;
+}
+
+.btc-page .btc-search {
+  position: relative;
+  width: 220px;
+  max-width: 100%;
+}
+
+.btc-page .btc-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--btc-muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.btc-page .btc-search .form-control {
+  padding-left: 32px;
+  padding-right: 28px;
+}
+
+.btc-page .btc-search-clear {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--btc-muted);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btc-page .btc-customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.btc-page .btc-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.btc-page .btc-customer-meta {
+  min-width: 0;
+}
+
+.btc-page .btc-customer-name {
+  display: block;
+  font-weight: 700;
+  color: #101828;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 210px;
+}
+
+.btc-page .btc-customer-name:hover {
+  color: #6576ff;
+}
+
+.btc-page .btc-strong {
+  font-weight: 600;
+  color: var(--btc-text);
+}
+
+.btc-page .btc-muted {
+  color: var(--btc-muted);
+  font-size: 11px;
+}
+
+.btc-page .btc-reason-wrap,
+.btc-page .btc-reason {
+  max-width: 240px;
+}
+
+.btc-page .btc-reason {
+  font-size: 11px;
+  color: var(--btc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btc-page .btc-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+}
+
+.btc-page .btc-badge-sm {
+  font-size: 10px;
+  padding: 3px 8px;
+}
+
+.btc-page .btc-empty {
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.btc-page .btc-empty-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #edf1f7;
+  color: var(--btc-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.btc-page .rdt_Table {
+  border-top: 0;
+}
+
+.btc-page .rdt_Pagination {
+  border-top: 1px solid var(--btc-border);
+}

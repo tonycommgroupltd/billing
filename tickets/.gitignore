@@ -1,0 +1,43 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+api/config.local.php
+api/config.php
+deploy-ready/api/config.php
+
+# Local IDE / tooling
+.vscode/
+
+# Large database dumps (use schema SQL in api/ instead)
+tonycommgroupltd_db*.sql
+tonycomm*.sql
+customers*.sql
+api/tonycommgroupltd_db*.sql
+deploy-ready/api/tonycommgroupltd_db*.sql
+
+# Server copies with live credentials
+isp1.tonycommgroupltd.com/db-config.php
+isp1.tonycommgroupltd.com/save-radius-config.php
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

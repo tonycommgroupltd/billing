@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tonycomm Group Limited — Company Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #00AEEF;
+      --blue-dark: #0090C8;
+      --blue-light: #E8F7FD;
+      --grey: #5A5A5A;
+      --grey-dark: #2D2D2D;
+      --grey-light: #F4F6F8;
+      --white: #FFFFFF;
+      --accent-gold: #C9A227;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --radius: 10px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    html {
+      font-size: 11.5pt;
+    }
+
+    body {
+      font-family: 'DM Sans', 'Segoe UI', sans-serif;
+      color: var(--grey-dark);
+      background: #e0e4e8;
+      line-height: 1.6;
+      letter-spacing: 0.015em;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      margin: 0 auto 16px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    @media print {
+      body { background: white; }
+      html { font-size: 11pt; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        height: 297mm;
+        max-height: 297mm;
+        overflow: hidden;
+      }
+      .no-print { display: none !important; }
+    }
+
+    /* ── ICONS ── */
+    .icon-box svg {
+      width: 52%;
+      height: 52%;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .icon-box--sm { width: 8mm; height: 8mm; background: var(--blue); border-radius: 6px; }
+    .icon-box--md { width: 12mm; height: 12mm; background: var(--blue-dark); border-radius: 6px; }
+    .icon-box--cert { width: 10mm; height: 10mm; background: var(--blue-dark); border-radius: 6px; margin-bottom: 2mm; }
+    .icon-box--cover {
+      width: 11mm;
+      height: 11mm;
+      background: rgba(0,174,239,0.15);
+      border: 1px solid rgba(0,174,239,0.35);
+      border-radius: 8px;
+      color: var(--blue);
+    }
+
+    .icon-box--cover svg { stroke: var(--blue); }
+
+    /* ── COVER ── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      height: 297mm;
+      max-height: 297mm;
+      background: #0c1829;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0,174,239,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,174,239,0.04) 1px, transparent 1px);
+      background-size: 18px 18px;
+      pointer-events: none;
+    }
+
+    .cover-top-bar {
+      height: 4px;
+      background: var(--blue);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+      align-items: stretch;
+      min-height: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-left {
+      padding: 14mm 14mm 10mm 18mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cover-logo img {
+      height: 52px;
+      margin-bottom: 8mm;
+    }
+
+    .cover-doc-type {
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 5mm;
+    }
+
+    .cover h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24pt;
+      font-weight: 700;
+      line-height: 1.12;
+      margin-bottom: 3mm;
+      letter-spacing: -0.3px;
+    }
+
+    .cover h1 span { color: var(--blue); }
+
+    .cover-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--blue);
+      margin-bottom: 6mm;
+    }
+
+    .cover-tagline {
+      font-size: 10pt;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.55;
+      margin-bottom: 6mm;
+      max-width: 105mm;
+      font-weight: 400;
+    }
+
+    .cover-pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2mm;
+      margin-bottom: 6mm;
+    }
+
+    .cover-pillar {
+      display: flex;
+      align-items: center;
+      gap: 2.5mm;
+      padding: 2mm 2.5mm;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+    }
+
+    .cover-pillar span {
+      font-size: 8pt;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.3;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm 6mm;
+      margin-top: auto;
+      padding-top: 6mm;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cover-meta-item label {
+      display: block;
+      font-size: 6.5pt;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: rgba(255,255,255,0.42);
+      margin-bottom: 1.5mm;
+      font-weight: 600;
+    }
+
+    .cover-meta-item span {
+      font-size: 9pt;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .cover-right {
+      position: relative;
+      overflow: hidden;
+      background: #1a3050;
+    }
+
+    .cover-right img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 45%;
+      display: block;
+      z-index: 0;
+    }
+
+    .cover-right-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        135deg,
+        rgba(12, 24, 41, 0.55) 0%,
+        rgba(12, 24, 41, 0.15) 50%,
+        rgba(0, 174, 239, 0.08) 100%
+      );
+    }
+
+    .cover-right-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: 10mm 12mm;
+      background: linear-gradient(to top, rgba(12, 24, 41, 0.88), transparent);
+    }
+
+    .cover-right-content p {
+      font-size: 8.5pt;
+      color: rgba(255,255,255,0.75);
+      margin: 0;
+      text-align: left;
+      line-height: 1.5;
+      border-left: 2px solid var(--blue);
+      padding-left: 4mm;
+    }
+
+    .cover-certs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2mm;
+      padding: 3.5mm 18mm;
+      background: rgba(0,0,0,0.35);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-cert-tag {
+      font-size: 6.5pt;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      padding: 2mm 3.5mm;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .cover-footer {
+      padding: 4mm 18mm;
+      background: #081220;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7.5pt;
+      color: rgba(255,255,255,0.45);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-footer strong {
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+
+    /* ── INNER PAGES ── */
+    .inner {
+      padding: 11mm 14mm 12mm;
+      height: 297mm;
+      max-height: 297mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Redistribute leftover vertical space on sparse pages */
+    .content-fill {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 3mm;
+    }
+
+    /* Side / banner photography for shorter pages */
+    .split-with-media {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 4mm;
+      align-items: stretch;
+      margin-top: 1mm;
+    }
+
+    .split-with-media__main {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 2.5mm;
+      min-height: 0;
+    }
+
+    .media-panel {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 0;
+      height: 100%;
+      background: #0c1829;
+      box-shadow: var(--shadow);
+    }
+
+    .media-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12,24,41,0.05) 35%, rgba(12,24,41,0.82) 100%);
+      pointer-events: none;
+    }
+
+    .media-panel__caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      padding: 4mm 3.5mm;
+      color: #fff;
+    }
+
+    .media-panel__caption strong {
+      display: block;
+      font-size: 10pt;
+      font-weight: 700;
+      margin-bottom: 1mm;
+      letter-spacing: 0.01em;
+    }
+
+    .media-panel__caption span {
+      display: block;
+      font-size: 8pt;
+      line-height: 1.4;
+      opacity: 0.92;
+      font-weight: 500;
+    }
+
+    .media-banner {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 48mm;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+      background: #0c1829;
+    }
+
+    .media-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(12,24,41,0.88) 0%, rgba(12,24,41,0.35) 55%, rgba(0,174,239,0.25) 100%);
+      pointer-events: none;
+    }
+
+    .media-banner__caption {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 5mm 5mm;
+      color: #fff;
+    }
+
+    .media-banner__caption strong {
+      font-size: 11pt;
+      font-weight: 700;
+      margin-bottom: 1.5mm;
+    }
+
+    .media-banner__caption span {
+      font-size: 8.5pt;
+      line-height: 1.45;
+      max-width: 120mm;
+      opacity: 0.94;
+      font-weight: 500;
+    }
+
+    .hero-img--tall {
+      height: 42mm;
+    }
+
+    .photo-pair {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 3mm;
+      margin: 2mm 0 3mm;
+    }
+
+    .photo-pair img {
+      width: 100%;
+      height: 36mm;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: var(--radius);
+      display: block;
+    }
+
+    /* Never stretch photos — crop to the box instead */
+    .page img {
+      image-rendering: auto;
+    }
+
+    .service-card img,
+    .media-panel img,
+    .media-banner img,
+    .hero-img,
+    .cover-right img {
+      object-fit: cover !important;
+      object-position: center center;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 3mm;
+      border-bottom: 2px solid var(--blue);
+      margin-bottom: 4mm;
+      flex-shrink: 0;
+    }
+
+    .page-header img {
+      height: 28px;
+    }
+
+    .page-header .page-num {
+      font-size: 9pt;
+      color: var(--grey);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .section-label {
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 2.5mm;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17pt;
+      color: var(--grey-dark);
+      margin-bottom: 3mm;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--grey-dark);
+      margin: 3mm 0 1.5mm;
+      letter-spacing: 0.01em;
+    }
+
+    h4 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin: 2mm 0 1mm;
+      letter-spacing: 0.01em;
+    }
+
+    p {
+      margin-bottom: 2mm;
+      color: var(--grey);
+      text-align: justify;
+      font-size: 10pt;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      line-height: 1.55;
+    }
+
+    .lead {
+      font-size: 10.5pt;
+      color: var(--grey-dark);
+      font-weight: 500;
+      line-height: 1.55;
+      letter-spacing: 0.02em;
+      border-left: 3px solid var(--blue);
+      padding-left: 3mm;
+      margin-bottom: 3mm;
+    }
+
+    ul {
+      margin: 0 0 2.5mm 4mm;
+      color: var(--grey);
+    }
+
+    ul li {
+      margin-bottom: 1mm;
+      padding-left: 1mm;
+    }
+
+    ul li::marker { color: var(--blue); }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 3mm;
+    }
+
+    .card {
+      background: var(--grey-light);
+      border-radius: var(--radius);
+      padding: 3mm;
+      border-left: 3px solid var(--blue);
+    }
+
+    .card h4 {
+      margin-top: 0;
+      color: var(--grey-dark);
+    }
+
+    .card p {
+      font-size: 9.5pt;
+      margin: 0;
+      text-align: left;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      font-weight: 500;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2mm;
+      margin: 3mm 0;
+    }
+
+    .stat {
+      text-align: center;
+      background: var(--blue-light);
+      border-radius: var(--radius);
+      padding: 2.5mm 2mm;
+    }
+
+    .stat .num {
+      font-size: 14pt;
+      font-weight: 700;
+      color: var(--blue-dark);
+      line-height: 1;
+    }
+
+    .stat .lbl {
+      font-size: 7pt;
+      color: var(--grey);
+      margin-top: 1.5mm;
+      line-height: 1.25;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 28mm;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin: 2mm 0 3mm;
+    }
+
+    .img-caption {
+      font-size: 7pt;
+      color: var(--grey);
+      text-align: center;
+      margin-top: -2mm;
+      margin-bottom: 2mm;
+      font-style: italic;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3mm;
+    }
+
+    .value-item {
+      display: flex;
+      gap: 2.5mm;
+      align-items: flex-start;
+      padding: 2mm;
+      background: var(--grey-light);
+      border-radius: var(--radius);
+    }
+
+    .value-icon {
+      width: 8mm;
+      height: 8mm;
+      background: var(--blue-dark);
+      border-radius: 6px;
+    }
+
+    .product-icon {
+      width: 12mm;
+      height: 12mm;
+      background: var(--blue-dark);
+      border-radius: 6px;
+    }
+
+    .value-item strong {
+      display: block;
+      font-size: 9pt;
+      margin-bottom: 1mm;
+    }
+
+    .value-item span {
+      font-size: 8.5pt;
+      color: var(--grey);
+    }
+
+    /* Services */
+    .service-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .service-card img {
+      width: 100%;
+      height: 28mm;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      background: #f1f5f9;
+    }
+
+    .service-card .body {
+      padding: 2mm 2.5mm 2.5mm;
+    }
+
+    .service-card h4 {
+      margin: 0 0 1mm;
+      color: var(--grey-dark);
+    }
+
+    .service-card p {
+      font-size: 9pt;
+      margin: 0;
+      text-align: left;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      font-weight: 500;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      font-size: 8pt;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 1.5mm 3mm;
+      border-radius: 12px;
+      margin: 1mm 1mm 0 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.5pt;
+      margin: 2mm 0;
+    }
+
+    thead {
+      background: var(--grey-dark);
+      color: white;
+    }
+
+    th, td {
+      padding: 1.5mm 2mm;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th { font-weight: 600; font-size: 7pt; }
+
+    tbody tr:nth-child(even) { background: var(--grey-light); }
+
+    /* Certifications */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+    }
+
+    .cert-box {
+      border: 1px solid #dde3ea;
+      border-radius: var(--radius);
+      padding: 2.5mm;
+      background: linear-gradient(135deg, #fafbfc, var(--blue-light));
+    }
+
+    .cert-box h4 {
+      margin: 0 0 1mm;
+      color: var(--grey-dark);
+      font-size: 8.5pt;
+    }
+
+    .cert-box p {
+      font-size: 7.5pt;
+      margin: 0;
+      text-align: left;
+      line-height: 1.35;
+    }
+
+    .cert-ref {
+      font-size: 7pt;
+      color: var(--blue-dark);
+      font-weight: 600;
+      margin-top: 1mm;
+    }
+
+    /* Software products */
+    .product-row {
+      display: grid;
+      grid-template-columns: 12mm 1fr;
+      gap: 3.5mm;
+      align-items: center;
+      padding: 4mm 3.5mm;
+      background: var(--grey-light);
+      border-radius: var(--radius);
+      margin-bottom: 0;
+    }
+
+    .product-row h4 {
+      margin: 0 0 1mm;
+      font-size: 10.5pt;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .product-row p {
+      font-size: 9.5pt;
+      margin: 0;
+      text-align: left;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      font-weight: 500;
+    }
+
+    /* Contact footer */
+    .contact-bar {
+      margin-top: auto;
+      background: var(--grey-dark);
+      color: white;
+      border-radius: var(--radius);
+      padding: 3.5mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3mm;
+      font-size: 8pt;
+    }
+
+    .contact-bar strong {
+      display: block;
+      color: var(--blue);
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1mm;
+    }
+
+    .contact-bar span {
+      display: block;
+      line-height: 1.45;
+    }
+
+    .page-footer-note {
+      text-align: center;
+      font-size: 7.5pt;
+      color: #aaa;
+      margin-top: 4mm;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+      color: white;
+      border-radius: var(--radius);
+      padding: 4mm 3.5mm;
+      margin: 2.5mm 0 0;
+    }
+
+    .highlight-box p {
+      color: rgba(255,255,255,0.96);
+      margin: 0;
+      text-align: left;
+      font-size: 10pt;
+      line-height: 1.55;
+      letter-spacing: 0.025em;
+      font-weight: 500;
+    }
+
+    .team-card {
+      padding: 3mm 3mm 3mm 4mm;
+      border: 1px solid #dde3ea;
+      border-left: 4px solid var(--blue);
+      border-radius: var(--radius);
+      margin-bottom: 2mm;
+      background: var(--grey-light);
+    }
+
+    .team-card h4 { margin: 0 0 1mm; }
+    .team-card .role {
+      font-size: 8pt;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 2mm;
+    }
+
+    .team-card p { font-size: 8.5pt; margin: 0; text-align: left; }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2mm;
+      margin-top: 2mm;
+    }
+
+    .badge {
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 1.2mm 2.8mm;
+      border-radius: 999px;
+      border: 1px solid rgba(0,174,239,0.35);
+    }
+
+    /* Print button */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: inherit;
+      font-size: 11pt;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,174,239,0.4);
+      z-index: 100;
+    }
+
+    .print-btn:hover { background: var(--blue-dark); }
+
+    body.embed-mode .print-btn { display: none !important; }
+    body.embed-mode {
+      background: #e8ecf0;
+      padding: 12px 0 24px;
+    }
+    body.embed-mode .page {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<script>
+  if (new URLSearchParams(location.search).get('embed') === '1') {
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.classList.add('embed-mode');
+    });
+    // In case DOMContentLoaded already fired
+    if (document.readyState !== 'loading') {
+      document.body.classList.add('embed-mode');
+    }
+  }
+</script>
+
+<button class="print-btn no-print" id="downloadPdfBtn" type="button" title="Download company profile as PDF">Download PDF</button>
+<script>
+  (function () {
+    var btn = document.getElementById('downloadPdfBtn');
+    if (!btn) return;
+    btn.textContent = 'Download PDF';
+    btn.onclick = function () {
+      // Standalone tab fallback: use print only if parent PDF helper is unavailable
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'tonycomm-company-profile-download' }, '*');
+        return;
+      }
+      window.print();
+    };
+  })();
+</script>
+
+<!-- ═══════════════════ PAGE 1 — COVER ═══════════════════ -->
+<div class="page cover">
+  <div class="cover-top-bar"></div>
+  <div class="cover-layout">
+    <div class="cover-left">
+      <div class="cover-logo">
+        <img src="logo.png" alt="Tonycomm Group Limited">
+      </div>
+      <div class="cover-doc-type" data-cp="docType">Corporate Company Profile · 2026</div>
+      <h1 data-cp="companyNameHtml" data-cp-html="1">Tonycomm <span>Group</span> Limited</h1>
+      <div class="cover-divider"></div>
+      <p class="cover-tagline" data-cp="tagline">
+        A licensed Kenyan ICT company delivering enterprise-grade internet connectivity, custom software development, and managed digital infrastructure solutions across Nakuru County and East Africa.
+      </p>
+      <div class="cover-pillars">
+        <div class="cover-pillar">
+          <div class="icon-box icon-box--cover">
+            <svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+          </div>
+          <span data-cp="pillar1">Internet &amp; Fiber Connectivity</span>
+        </div>
+        <div class="cover-pillar">
+          <div class="icon-box icon-box--cover">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <span data-cp="pillar2">Custom Software Development</span>
+        </div>
+        <div class="cover-pillar">
+          <div class="icon-box icon-box--cover">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span data-cp="pillar3">ERP · POS · SACCO Systems</span>
+        </div>
+        <div class="cover-pillar">
+          <div class="icon-box icon-box--cover">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span data-cp="pillar4">Managed IT &amp; Cybersecurity</span>
+        </div>
+      </div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <label>Established</label>
+          <span data-cp="metaEstablished">April 2019 · Nakuru, Kenya</span>
+        </div>
+        <div class="cover-meta-item">
+          <label>Registration</label>
+          <span data-cp="metaRegistration">PVT-AJUV695</span>
+        </div>
+        <div class="cover-meta-item">
+          <label>Website</label>
+          <span data-cp="metaWebsite">www.tonycommgroupltd.com</span>
+        </div>
+        <div class="cover-meta-item">
+          <label>Contact</label>
+          <span data-cp="metaContact">0110 345 166</span>
+        </div>
+      </div>
+    </div>
+    <div class="cover-right">
+      <img src="cover-portrait.png" alt="Lakeside East Africa — Tonycomm home in the Rift Valley">
+      <div class="cover-right-overlay"></div>
+      <div class="cover-right-content">
+        <p data-cp="coverRightBlurb">Rooted in Nakuru and the Rift Valley — building digital bridges with reliable connectivity and intelligent software for Kenya.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cover-certs">
+    <span class="cover-cert-tag">CAK Licensed (ASP &amp; NFP)</span>
+    <span class="cover-cert-tag">KPLC Authorized</span>
+    <span class="cover-cert-tag">ODPC Data Protection Compliant</span>
+    <span class="cover-cert-tag">NEMA Compliant</span>
+    <span class="cover-cert-tag">InfoSec Certified · ISACA</span>
+  </div>
+  <div class="cover-footer">
+    <span><strong>Tonycomm Group Limited</strong> · Private Limited Company</span>
+    <span>Nakuru County, Republic of Kenya</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 2 — EXECUTIVE SUMMARY ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">02</span>
+    </div>
+
+    <div class="content-fill">
+    <div>
+    <div class="section-label">Executive Summary</div>
+    <h2 data-cp="execTitle">Bridging Digital Divides Across Kenya</h2>
+
+    <p class="lead" data-cp="execLead">
+      Tonycomm Group Limited is a Nakuru-based technology company delivering high-speed fiber and wireless internet alongside bespoke software solutions — from SACCO management systems and ERP platforms to POS applications and corporate websites — to residential, commercial, and institutional clients across Kenya since 2019.
+    </p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="num" data-cp="stat1num">2019</div>
+        <div class="lbl" data-cp="stat1lbl">Year Established</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-cp="stat2num">99.9%</div>
+        <div class="lbl" data-cp="stat2lbl">Uptime Guarantee</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-cp="stat3num">24/7</div>
+        <div class="lbl" data-cp="stat3lbl">Customer Support</div>
+      </div>
+      <div class="stat">
+        <div class="num" data-cp="stat4num">150+</div>
+        <div class="lbl" data-cp="stat4lbl">Mbps Business Speeds</div>
+      </div>
+    </div>
+
+    <div class="photo-pair">
+      <img src="fiber-rack.png" alt="Tonycomm fiber optic network infrastructure">
+      <img src="lake-nakuru.png" alt="Lake Nakuru — home of Tonycomm in the Rift Valley">
+    </div>
+    <p class="img-caption">Enterprise-grade fiber infrastructure powered from Nakuru — connecting homes and businesses across the Rift Valley</p>
+
+    <p data-cp="execBody">
+      Operating from the Amazing Grace Building in Heshima, Tonycomm holds ASP and NFP licenses from the Communications Authority of Kenya (CAK), and KPLC-approved pole infrastructure authorization. Under Director Mr. Antony Wachira, the company combines telecommunications with in-house software engineering to drive digital inclusion across Nakuru East, Subukia, Bahati, and beyond.
+    </p>
+
+    <div class="highlight-box">
+      <p data-cp="highlightDualHtml" data-cp-html="1"><strong>Dual Expertise:</strong> Tonycomm is uniquely positioned as both a licensed Internet Service Provider and a software development house — offering end-to-end digital transformation for SACCOs, SMEs, schools, and enterprises across East Africa.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h4 data-cp="cardInternetTitle">Internet &amp; Connectivity</h4>
+        <p data-cp="cardInternetBody">Fiber optic and wireless internet for homes, businesses, and institutions with zero data caps and symmetrical speeds.</p>
+      </div>
+      <div class="card">
+        <h4 data-cp="cardSoftwareTitle">Software &amp; Digital Solutions</h4>
+        <p data-cp="cardSoftwareBody">Custom SACCO systems, ERP, POS, mobile apps, and professional websites built for the African market.</p>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 3 — COMPANY OVERVIEW & VALUES ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">03</span>
+    </div>
+
+    <div class="section-label">Company Overview</div>
+    <h2 data-cp="overviewTitle">Who We Are</h2>
+
+    <p data-cp="overviewBody">
+      Tonycomm Group Limited was incorporated on 10 April 2019 (Certificate No. PVT-AJUV695) under the Companies Act, 2015 of Kenya as a Private Limited Company. Headquartered at the Amazing Grace Building, 1st Floor, along Nakuru–Nyahururu Road, Heshima, with postal address P.O. Box 441-20100, Nakuru, the company has grown from a local ISP into a comprehensive ICT partner serving urban and semi-rural communities across Nakuru County.
+    </p>
+
+    <div class="two-col">
+      <div>
+        <h3>Mission</h3>
+        <p data-cp="mission">To provide exceptional internet and technology services that enhance connectivity, enrich lives, and foster innovation and growth in the communities we serve through reliable, high-speed, affordable, and secure digital solutions.</p>
+
+        <h3>Vision</h3>
+        <p data-cp="vision">To become the premier internet and software solutions provider in Nakuru and beyond — renowned for speed, security, high-end performance, and democratizing digital access for all socioeconomic segments across East Africa.</p>
+      </div>
+      <div>
+        <img src="cover-nakuru-fast.png" alt="Fast internet in Nakuru — customers online with Tonycomm" style="width:100%; height:48mm; object-fit:cover; object-position:center 30%; border-radius:10px;">
+        <p class="img-caption">Fast, reliable internet for people living and working in Nakuru</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 3mm;">Core Values</h3>
+    <div class="values-grid">
+      <div class="value-item">
+        <div class="icon-box icon-box--sm value-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <strong>Customer Centricity</strong>
+          <span>24/7 responsive support, tailored solutions, and flexible month-to-month plans with no hidden fees.</span>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="icon-box icon-box--sm value-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <strong>Technological Excellence</strong>
+          <span>Advanced fiber and wireless infrastructure delivering 99.9% uptime and zero data caps.</span>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="icon-box icon-box--sm value-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <strong>Community Development</strong>
+          <span>Local employment, digital literacy initiatives, and discounted rates for schools and low-income households.</span>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="icon-box icon-box--sm value-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <strong>Integrity &amp; Transparency</strong>
+          <span>Clear pricing, no long-term contracts, and full regulatory compliance across all operations.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 4 — INTERNET SERVICES ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">04</span>
+    </div>
+
+    <div class="section-label">Internet &amp; Connectivity Services</div>
+    <h2 data-cp="internetTitle">Reliable High-Speed Internet</h2>
+
+    <p data-cp="internetIntro">Tonycomm delivers scalable fiber optic and wireless internet solutions designed for Kenya's diverse connectivity needs — from residential streaming to enterprise-grade operations.</p>
+
+    <div class="three-col">
+      <div class="service-card">
+        <img src="fiber-speed.png" alt="High-speed fiber internet for homes in Nakuru">
+        <div class="body">
+          <h4>Residential Internet</h4>
+          <p>Ultra-fast fiber with symmetrical speeds, low latency, and unlimited data for streaming, gaming, and remote work.</p>
+          <span class="tag">From Ksh 1,500/mo</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="isp-hologram.png" alt="Tonycomm internet service provider for business">
+        <div class="body">
+          <h4>Business &amp; Enterprise</h4>
+          <p>Managed IT, VPN configurations, dedicated support, and custom packages up to 150 Mbps for data-intensive operations.</p>
+          <span class="tag">Custom Quotes</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="wifi-devices.png" alt="Wireless WiFi connectivity across devices">
+        <div class="body">
+          <h4>Wireless Internet</h4>
+          <p>Robust wireless connectivity extending to remote and hard-to-reach semi-rural areas across Nakuru County.</p>
+          <span class="tag">Wide Coverage</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Internet Packages Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Plan Type</th>
+          <th>Speed</th>
+          <th>Monthly Cost</th>
+          <th>Ideal For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Home Basic</td><td>5 Mbps</td><td>Ksh 1,500</td><td>Light browsing, single device</td></tr>
+        <tr><td>Home Premium</td><td>15 Mbps</td><td>Ksh 3,000</td><td>HD streaming, 5–7 devices</td></tr>
+        <tr><td>Home Gold</td><td>30 Mbps</td><td>Ksh 4,499</td><td>Gaming, large households</td></tr>
+        <tr><td>Business Basic</td><td>7 Mbps</td><td>Ksh 2,000</td><td>Small retail, POS systems</td></tr>
+        <tr><td>Business Gold</td><td>30 Mbps</td><td>Ksh 6,000</td><td>Medium enterprises, VoIP</td></tr>
+        <tr><td>Custom Business</td><td>Up to 150 Mbps</td><td>Custom quote</td><td>Large institutions, ERP/cloud</td></tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>Installation &amp; Setup</h4>
+        <p>Professional installation within 45 minutes of technician arrival. Standard setup Ksh 3,500 (Ksh 2,000 with own router).</p>
+      </div>
+      <div class="card">
+        <h4>M-Pesa Payments</h4>
+        <p data-cp="paybillHtml" data-cp-html="1">Paybill <strong>4129711</strong> — use your mobile number as the account number for convenient payments.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 5 — SOFTWARE SOLUTIONS ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">05</span>
+    </div>
+
+    <div class="split-with-media">
+      <div class="split-with-media__main">
+        <div>
+          <div class="section-label">Software &amp; Digital Solutions</div>
+          <h2 data-cp="softwareTitle">Custom Software for African Businesses</h2>
+          <p data-cp="softwareIntro">Beyond connectivity, Tonycomm Group develops enterprise-grade software tailored to Kenyan and East African organizations — combining local market understanding with internationally certified engineering expertise.</p>
+        </div>
+
+        <div class="product-row">
+          <div class="icon-box icon-box--md product-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><line x1="9" y1="9" x2="9" y2="9.01"/><line x1="9" y1="12" x2="9" y2="12.01"/><line x1="9" y1="15" x2="9" y2="15.01"/></svg>
+          </div>
+          <div>
+            <h4>SACCO Management Software</h4>
+            <p>Member management, savings &amp; loans, dividends, M-Pesa, SMS alerts, and CAK-ready reporting for Kenya's cooperatives.</p>
+            <div class="badge-row">
+              <span class="badge">Member Portal</span>
+              <span class="badge">Loan Management</span>
+              <span class="badge">M-Pesa Integration</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="icon-box icon-box--md product-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div>
+            <h4>ERP (Enterprise Resource Planning)</h4>
+            <p>Inventory, HR, payroll, accounting, and procurement modules that streamline multi-branch SME operations.</p>
+            <div class="badge-row">
+              <span class="badge">Inventory</span>
+              <span class="badge">HR &amp; Payroll</span>
+              <span class="badge">Financial Reports</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="icon-box icon-box--md product-icon">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <div>
+            <h4>POS (Point of Sale) Systems</h4>
+            <p>Barcode scanning, receipts, stock sync, M-Pesa/card payments, and live sales analytics for Kenyan retail.</p>
+            <div class="badge-row">
+              <span class="badge">M-Pesa Ready</span>
+              <span class="badge">Inventory Sync</span>
+              <span class="badge">Sales Analytics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="media-panel">
+        <img src="cloud-services.png" alt="Cloud and custom digital systems for Kenyan organisations">
+        <div class="media-panel__caption">
+          <strong>Built for Kenyan SACCOs &amp; SMEs</strong>
+          <span>Local workflows, M-Pesa-first payments, and software that matches how East African organizations actually operate.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 6 — SOFTWARE SOLUTIONS (CONT.) ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">06</span>
+    </div>
+
+    <div class="content-fill">
+      <div>
+        <div class="section-label">Software &amp; Digital Solutions</div>
+        <h2 data-cp="softwareTitle2">Web, Mobile &amp; Managed IT</h2>
+      </div>
+
+      <div class="product-row">
+        <div class="icon-box icon-box--md product-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <h4>Websites &amp; Web Applications</h4>
+          <p>Corporate sites, e-commerce, school portals, and custom web apps — responsive, secure, and tuned for African connectivity.</p>
+          <div class="badge-row">
+            <span class="badge">E-Commerce</span>
+            <span class="badge">School Portals</span>
+            <span class="badge">CMS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="product-row" style="margin:0;">
+          <div class="icon-box icon-box--md product-icon">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div>
+            <h4>Mobile Applications</h4>
+            <p>Android &amp; iOS apps for customer engagement, field ops, and mobile money integrations.</p>
+          </div>
+        </div>
+        <div class="product-row" style="margin:0;">
+          <div class="icon-box icon-box--md product-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div>
+            <h4>Managed IT &amp; Support</h4>
+            <p>Network admin, cloud backup, security reviews, and 24/7 technical assistance for connected sites.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="media-banner">
+        <img src="wifi-touch.png" alt="Connected devices and managed WiFi networks">
+        <div class="media-banner__caption">
+          <strong>From concept to production — then we stay with you</strong>
+          <span>Design, build, train, and support web &amp; mobile systems for schools, SACCOs, shops, and enterprises across Kenya.</span>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p data-cp="softwareHighlightHtml" data-cp-html="1"><strong>End-to-End Delivery:</strong> From concept and development to deployment, training, and ongoing support — Tonycomm builds software solutions tailored for SACCOs, SMEs, schools, and enterprises across Kenya.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 7 — COVERAGE & ADVANTAGES ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">07</span>
+    </div>
+
+    <div class="section-label">Coverage &amp; Competitive Edge</div>
+    <h2 data-cp="coverageTitle">Serving Nakuru &amp; the Rift Valley</h2>
+
+    <div class="two-col">
+      <div>
+        <h3>Coverage Areas</h3>
+        <p>Tonycomm Group currently provides internet and ICT services across Nakuru County, with ongoing expansion into neighboring Rift Valley regions.</p>
+        <h4>Urban Nakuru</h4>
+        <ul>
+          <li>Maili Saba, Ahero Bahati, Maili Sita, Heshima</li>
+          <li>Kiti, Bismark, Whitehouse, Mawanga, Tumsifu</li>
+          <li>Kiratina, Kiamunyeki, Lanet, Makao</li>
+          <li>Umoja I, II &amp; III</li>
+        </ul>
+        <h4>Semi-Rural Zones</h4>
+        <ul>
+          <li>Murunyu, Solai, Ndungiri, Wanyororo</li>
+          <li>Kabazi, Subukia and surrounding communities</li>
+        </ul>
+        <p style="font-size:8.5pt;"><em>Prospective customers outside these zones may contact us at <strong>0110 345 166</strong> to confirm availability or request infrastructure extension.</em></p>
+      </div>
+      <div>
+        <img src="ethernet-switch.png" alt="Network switching and last-mile connectivity hardware" style="width:100%; height:40mm; object-fit:cover; object-position:center top; border-radius:10px; margin-bottom:3mm;">
+        <img src="smart-city-net.png" alt="Smart connected communities across Nakuru" style="width:100%; height:40mm; object-fit:cover; border-radius:10px;">
+        <p class="img-caption">Expanding reliable ICT access across Nakuru's urban and semi-rural communities</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 3mm;">Why Choose Tonycomm?</h3>
+    <div class="three-col">
+      <div class="card">
+        <h4>Technical Excellence</h4>
+        <p>99.9% uptime, zero data caps, symmetrical fiber speeds, and weather-resistant infrastructure.</p>
+      </div>
+      <div class="card">
+        <h4>Customer First</h4>
+        <p>No contracts, transparent pricing, multichannel 24/7 support via phone, WhatsApp, email, and on-site visits.</p>
+      </div>
+      <div class="card">
+        <h4>Local Integration</h4>
+        <p>Local employment, KPLC partnerships, NEMA-compliant deployments, and community digital inclusion programs.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 3mm;">
+      <p><strong>One-Stop ICT Partner:</strong> From laying fiber cables to deploying SACCO software and managing your entire IT infrastructure — Tonycomm delivers integrated solutions under one trusted Kenyan brand.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 8 — CERTIFICATIONS & COMPLIANCE ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">08</span>
+    </div>
+
+    <div class="section-label">Certifications &amp; Regulatory Compliance</div>
+    <h2>Licensed, Certified &amp; Compliant</h2>
+
+    <p>Tonycomm Group Limited operates with full legal and regulatory compliance across telecommunications, data protection, and corporate governance — giving our clients confidence in secure, lawful, and professional service delivery.</p>
+
+    <div class="cert-grid">
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h4>Certificate of Incorporation</h4>
+        <p>Registered as a Private Limited Company under the Companies Act, 2015 of Kenya.</p>
+        <div class="cert-ref">Reg. No. PVT-AJUV695 · Incorporated 10 April 2019</div>
+      </div>
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+        </div>
+        <h4>CAK — ASP &amp; NFP Licenses</h4>
+        <p>Licensed by the Communications Authority of Kenya as an Application Service Provider (ASP) and Network Facilities Provider (NFP), authorizing infrastructure deployment and internet service provision.</p>
+        <div class="cert-ref">Communications Authority of Kenya</div>
+      </div>
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h4>KPLC Infrastructure Authorization</h4>
+        <p>Authorized by Kenya Power and Lighting Company (KPLC) to utilize utility poles for telecommunications cabling across our service areas.</p>
+        <div class="cert-ref">Kenya Power &amp; Lighting Company</div>
+      </div>
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h4>Kenya Data Protection Act, 2019</h4>
+        <p>Registered and compliant with the Data Protection Act, 2019 and ODPC Regulations, 2021. Tonycomm is a licensed Data Controller/Processor with the Office of the Data Protection Commissioner (ODPC).</p>
+        <div class="cert-ref">Office of the Data Protection Commissioner (ODPC)</div>
+      </div>
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+        </div>
+        <h4>NEMA Environmental Compliance</h4>
+        <p>All infrastructure deployments adhere to National Environment Management Authority (NEMA) regulations, ensuring environmentally responsible network expansion.</p>
+        <div class="cert-ref">NEMA · Republic of Kenya</div>
+      </div>
+      <div class="cert-box">
+        <div class="icon-box icon-box--cert cert-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <h4>Information Security Certifications</h4>
+        <p>Our software engineering team includes professionals certified in International Information System Security and active ISACA membership — bringing world-class cybersecurity standards to every solution.</p>
+        <div class="cert-ref">(ISC)² · ISACA Member</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 9 — LEADERSHIP & TEAM ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">09</span>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>Data Protection Commitment:</strong> In compliance with Kenya's Constitution (Article 31) and the Data Protection Act 2019, Tonycomm implements robust data security measures including encryption, access controls, breach notification protocols, and privacy-by-design principles across all internet and software services.</p>
+    </div>
+
+    <div class="section-label">Leadership &amp; Technical Expertise</div>
+    <h2>Experienced Team, Local Roots</h2>
+
+    <div class="team-card">
+      <h4>Mr. Antony Wachira</h4>
+      <div class="role">Director · Tonycomm Group Limited</div>
+      <p>A Kenyan youth advocate and technology entrepreneur who believes in ICT's transformative power for socioeconomic and political advancement. Mr. Wachira's vision drives Tonycomm's mission of accessible, high-quality internet and software services across Nakuru and beyond.</p>
+    </div>
+
+    <h3>Technical &amp; Engineering Team</h3>
+    <div class="two-col">
+      <div class="card">
+        <h4>Telecommunications Engineers</h4>
+        <p>Qualified civil engineering technicians and telecommunication engineers conducting site inspections, network mast assessments, fiber optic line mapping, and regulatory compliance checks.</p>
+      </div>
+      <div class="card">
+        <h4>Software Engineers</h4>
+        <p>Certified professionals in international information system security with ISACA membership, delivering secure SACCO systems, ERP platforms, POS solutions, and web applications.</p>
+        <div class="badge-row" style="margin-top:2mm;">
+          <span class="badge">InfoSec Certified</span>
+          <span class="badge">ISACA Member</span>
+          <span class="badge">Full-Stack Dev</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top: 2mm;">
+      <div class="card">
+        <h4>Field Technicians</h4>
+        <p>Locally trained fiber optic technicians providing rapid installation (within 45 minutes) and on-site troubleshooting, including night-call support.</p>
+      </div>
+      <div class="card">
+        <h4>24/7 Support Team</h4>
+        <p>Multichannel customer service agents available via phone, WhatsApp, email, Facebook Messenger, and on-site visits.</p>
+      </div>
+    </div>
+
+    <h3>Community Engagement &amp; Corporate Responsibility</h3>
+    <ul>
+      <li><strong>Infrastructure Partnerships:</strong> Collaborating with KPLC, county authorities, and real estate developers to expand digital access.</li>
+      <li><strong>Local Employment:</strong> Hiring and training Nakuru-based fiber technicians and ICT professionals.</li>
+      <li><strong>Digital Inclusion:</strong> Discounted installation and subscription rates for schools and low-income households.</li>
+      <li><strong>Environmental Stewardship:</strong> NEMA-compliant deployments minimizing ecological impact.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 10 — TESTIMONIALS & OUTLOOK ═══════════════════ -->
+<div class="page">
+  <div class="inner">
+    <div class="page-header">
+      <img src="logo.png" alt="Tonycomm">
+      <span class="page-num">10</span>
+    </div>
+
+    <div class="section-label">Recognition &amp; Future Outlook</div>
+    <h2>Trusted by Our Community</h2>
+
+    <div class="two-col">
+      <div class="card" style="border-left-color: var(--accent-gold);">
+        <p style="font-style:italic; font-size:9pt;">"Honest and professional service — Tonycomm delivered exactly what they promised. Our business internet has been rock solid."</p>
+        <p style="font-size:8pt; margin-top:2mm; font-weight:600;">— Business Client, Nakuru</p>
+      </div>
+      <div class="card" style="border-left-color: var(--accent-gold);">
+        <p style="font-style:italic; font-size:9pt;">"Incredible customer support. They installed our fiber within the hour and the speeds are exactly as advertised. No hidden charges."</p>
+        <p style="font-size:8pt; margin-top:2mm; font-weight:600;">— Residential Customer, Lanet</p>
+      </div>
+    </div>
+
+    <p style="margin-top:4mm;">Tonycomm Group enjoys consistently positive reviews on Google and social media, with customers praising reliability, transparent pricing, and responsive 24/7 support.</p>
+
+    <h3>Future Outlook</h3>
+    <div class="three-col">
+      <div class="service-card">
+        <img src="fiber-rack.png" alt="Fiber network expansion across Nakuru County">
+        <div class="body">
+          <h4>Network Expansion</h4>
+          <p>Extending fiber infrastructure to underserved regions within Nakuru County and the broader Rift Valley.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="smart-city-net.png" alt="Smart city connectivity solutions">
+        <div class="body">
+          <h4>Smart City Solutions</h4>
+          <p>Partnering with real estate developers on integrated smart building and community connectivity projects.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="cloud-services.png" alt="Growing Tonycomm software and cloud portfolio">
+        <div class="body">
+          <h4>Software Portfolio Growth</h4>
+          <p>Expanding SACCO, ERP, and fintech software offerings to serve more cooperatives and enterprises across Kenya.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 8mm;">Contact Us</div>
+    <h2 data-cp="contactTitle">Get Connected Today</h2>
+
+    <div class="contact-bar">
+      <div>
+        <strong>Phone / WhatsApp</strong>
+        <span data-cp="contactPhone">0110 345 166 · 0718 742 693</span>
+      </div>
+      <div>
+        <strong>Email</strong>
+        <span data-cp="contactEmail">tonycommgroupltd@gmail.com</span>
+      </div>
+      <div>
+        <strong>Office Address</strong>
+        <span data-cp="contactAddressHtml" data-cp-html="1">Amazing Grace Building, 1st Floor<br>
+        Nakuru–Nyahururu Road, Heshima<br>
+        P.O. Box 441-20100, Nakuru</span>
+      </div>
+      <div>
+        <strong>Online</strong>
+        <span data-cp="contactOnlineHtml" data-cp-html="1">www.tonycommgroupltd.com<br>
+        Facebook: Tonycomm Group LTD<br>
+        Instagram: @Tonycommgroupltd</span>
+      </div>
+    </div>
+
+    <p class="page-footer-note" style="margin-top:6mm;" data-cp="footerNoteHtml" data-cp-html="1">
+      Tonycomm Group Limited · Company Profile 2026 · Nakuru, Kenya<br>
+      Connecting communities. Building software. Powering Africa's digital economy.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

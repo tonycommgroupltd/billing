@@ -1,0 +1,62 @@
+{
+  "vsol-epon": {
+    "label": "VSOL EPON (V1600D / GE12)",
+    "mibFamily": "epon",
+    "snmpTransport": "routeros",
+    "oids": {
+      "system": "1.3.6.1.2.1.1",
+      "oltInfo": "1.3.6.1.4.1.37950.1.1.5.10.12.5",
+      "oltCpu": "1.3.6.1.4.1.37950.1.1.5.10.12.3",
+      "oltMemory": "1.3.6.1.4.1.37950.1.1.5.10.12.4",
+      "onuAuthBase": "1.3.6.1.4.1.37950.1.1.5.12.1.25.1",
+      "onuAuthColumns": ["4", "5", "6", "9", "12", "17", "18", "19", "20"],
+      "onuOpticalRx": "1.3.6.1.4.1.37950.1.1.5.12.2.1.8.1.7"
+    },
+    "features": {
+      "oltInfo": true,
+      "onuList": true,
+      "syslog": true,
+      "traps": true
+    },
+    "onuListCacheMs": 300000,
+    "oltInfoCacheMs": 120000
+  },
+  "vsol-gpon": {
+    "label": "VSOL GPON (V1600G/GS/G0B/G1B)",
+    "mibFamily": "gpon",
+    "snmpTransport": "routeros",
+    "ponPortPrefix": "GPON0/",
+    "oids": {
+      "system": "1.3.6.1.2.1.1",
+      "oltInfo": "1.3.6.1.4.1.37950.1.1.5.10.12.5",
+      "oltCpu": "1.3.6.1.4.1.37950.1.1.5.10.12.3",
+      "oltMemory": "1.3.6.1.4.1.37950.1.1.5.10.12.4",
+      "onuAuthBase": "1.3.6.1.4.1.37950.1.1.6.1.1.2.1",
+      "onuStaBase": "1.3.6.1.4.1.37950.1.1.6.1.1.1.1",
+      "onuAuthColumns": ["3", "5", "6"],
+      "onuStaColumns": ["4", "5"]
+    },
+    "features": {
+      "oltInfo": true,
+      "onuList": true,
+      "syslog": true,
+      "traps": true
+    },
+    "onuListCacheMs": 300000,
+    "oltInfoCacheMs": 120000
+  },
+  "hioso-trap": {
+    "label": "HIOSO HA7304 (trap mode)",
+    "mibFamily": "hioso",
+    "snmpTransport": "routeros",
+    "oids": {
+      "system": "1.3.6.1.2.1.1"
+    },
+    "features": {
+      "oltInfo": false,
+      "onuList": false,
+      "syslog": false,
+      "traps": true
+    }
+  }
+}

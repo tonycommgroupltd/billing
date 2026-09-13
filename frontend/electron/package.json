@@ -1,0 +1,9 @@
+{
+  "name": "tonycomm-desktop-runtime",
+  "private": true,
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "express": "^4.21.2",
+    "http-proxy-middleware": "^2.0.9"
+  }
+}

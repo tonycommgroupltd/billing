@@ -1,0 +1,104 @@
+.cable-usage-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.cable-usage-roll-list {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.cable-usage-roll-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid #e5e9f2;
+  background: #fff;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cable-usage-roll-item:hover {
+  background: #f5f6fa;
+}
+
+.cable-usage-roll-item--active {
+  background: #eef2ff;
+  border-left: 3px solid #6576ff;
+}
+
+.cable-usage-roll-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cable-usage-roll-no {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+}
+
+.cable-usage-roll-item-meta {
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.cable-usage-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cable-usage-detail-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cable-usage-stat {
+  background: #f5f6fa;
+  border-radius: 8px;
+  padding: 8px 14px;
+  min-width: 72px;
+  text-align: center;
+}
+
+.cable-usage-stat .label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #8094ae;
+  font-weight: 600;
+}
+
+.cable-usage-stat .value {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #364a63;
+}
+
+.cable-usage-table td {
+  vertical-align: middle;
+}
+
+@media (max-width: 991px) {
+  .cable-usage-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cable-usage-roll-list {
+    max-height: 280px;
+  }
+}

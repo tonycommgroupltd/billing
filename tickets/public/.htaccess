@@ -1,0 +1,99 @@
+# ── Bypass Imunify360 / Anti-Bot challenge for API requests ──
+<IfModule mod_env.c>
+  SetEnvIfNoCase Request_URI "^/api/" noabuse=1
+</IfModule>
+
+# ── Handle CORS preflight at Apache level (before PHP) ──
+<IfModule mod_headers.c>
+  RequestHeader set Host "isp.tonycommgroupltd.com" env=TCOM_PROXY
+  # Match allowed origins for API requests
+  SetEnvIf Origin "^https://tickets\.tonycommgroupltd\.com$" CORS_API_ORIGIN=$0
+  SetEnvIf Origin "^https://test\.tonycommgroupltd\.com$" CORS_API_ORIGIN=$0
+  SetEnvIf Origin "^http://localhost:(3000|3001)$" CORS_API_ORIGIN=$0
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Proxy /api to ISP VPS (fallback if build still uses /api). Prefer direct isp URL in .env.production.
+  RewriteRule ^api/(list-messages|view-messages|resend-sms|messages/.*)$ https://isp.tonycommgroupltd.com/api/v1/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^api/(.*)$ https://isp.tonycommgroupltd.com/tickets-api/$1 [P,L,E=TCOM_PROXY:1]
+  RewriteRule ^socket\.io/?(.*)$ https://isp.tonycommgroupltd.com/socket.io/$1 [P,L,E=TCOM_PROXY:1]
+
+  # Handle CORS preflight OPTIONS for /api/ — return 204 immediately with headers
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteCond %{REQUEST_URI} ^/api/ [NC]
+  RewriteRule ^(.*)$ $1 [R=204,L]
+
+  # HTTP deploy — HTTPS redirect disabled while DNS/VPS settles
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # Don't rewrite actual files or directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  
+  # IMPORTANT: Don't rewrite API/socket paths to index.html
+  RewriteCond %{REQUEST_URI} !^/api/ [NC]
+  RewriteCond %{REQUEST_URI} !^/socket\.io [NC]
+  
+  # Rewrite everything else to index.html for React Router
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# CORS Headers for API preflight responses
+<IfModule mod_headers.c>
+  Header always set Access-Control-Allow-Origin "%{CORS_API_ORIGIN}e" env=CORS_API_ORIGIN
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS_API_ORIGIN
+  Header always set Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With" env=CORS_API_ORIGIN
+  Header always set Access-Control-Allow-Credentials "true" env=CORS_API_ORIGIN
+  Header always set Access-Control-Max-Age "86400" env=CORS_API_ORIGIN
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE text/javascript application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
+</IfModule>
+
+# Cache Control
+<IfModule mod_headers.c>
+    # HTML & JSON: Never cache
+    <FilesMatch "\.(html|json)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+
+    # JS/CSS: no-cache (always revalidate — safe since CRA hashes filenames)
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+
+    # Static media: Cache for 1 year (filenames don't change)
+    <FilesMatch "\.(png|jpg|jpeg|gif|ico|svg|woff|woff2)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Prevent access to sensitive files
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+

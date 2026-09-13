@@ -1,0 +1,700 @@
+/* ── Fleet page shell — prevent horizontal overflow / zoom feel on mobile ─── */
+
+.fleet-page-root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.fleet-page-root *,
+.fleet-page-root *::before,
+.fleet-page-root *::after {
+  box-sizing: border-box;
+}
+
+.fleet-page-root .form-control,
+.fleet-page-root input,
+.fleet-page-root select,
+.fleet-page-root textarea {
+  font-size: 16px; /* prevents iOS auto-zoom on focus */
+  max-width: 100%;
+}
+
+.fleet-page-root .card-inner {
+  overflow-x: hidden;
+}
+
+.fleet-page-root .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.fleet-page-root .row > [class*="col"] {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.fleet-page-root img {
+  max-width: 100%;
+  height: auto;
+}
+
+.fleet-team-header {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+/* ── Fleet layout & sub-navigation (mobile-first) ─────────────────────────── */
+
+.fleet-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  padding: 4px 0 12px;
+  margin-bottom: 16px;
+}
+
+.fleet-subnav__link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #dbdfea;
+  background: #fff;
+  color: #526484;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.fleet-subnav__link:hover {
+  border-color: #6576ff;
+  color: #6576ff;
+}
+
+.fleet-subnav__link--active {
+  background: #6576ff;
+  border-color: #6576ff;
+  color: #fff !important;
+}
+
+.fleet-subnav__short {
+  display: none;
+}
+
+.fleet-page-head {
+  margin-bottom: 8px;
+}
+
+.fleet-page-head .nk-block-head {
+  margin-bottom: 0;
+}
+
+.fleet-page-head .nk-block-between {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fleet-touch-input,
+.fleet-touch-input.form-control {
+  min-height: 48px;
+  font-size: 16px; /* prevents iOS zoom on focus */
+}
+
+.fleet-touch-input[type="date"] {
+  max-width: 100%;
+}
+
+.fleet-btn-block-mobile {
+  width: 100%;
+}
+
+.fleet-btn-touch {
+  min-height: 44px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.fleet-camera-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+.fleet-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.fleet-vehicle-card {
+  border: 2px solid #e5e9f2;
+  border-radius: 12px;
+  padding: 14px 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-align: left;
+  width: 100%;
+  min-height: 44px;
+}
+
+.fleet-vehicle-card:hover,
+.fleet-vehicle-card:focus {
+  border-color: #c4d0ff;
+  box-shadow: 0 4px 14px rgba(101, 118, 255, 0.12);
+  outline: none;
+}
+
+.fleet-vehicle-card--active {
+  border-color: #6576ff;
+  box-shadow: 0 4px 18px rgba(101, 118, 255, 0.18);
+}
+
+.fleet-plate {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+}
+
+.fleet-code-badge {
+  display: inline-block;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #6576ff;
+  color: #fff;
+}
+
+.fleet-meta {
+  font-size: 0.76rem;
+  color: #8094ae;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+.fleet-alert-chip {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+  margin-right: 4px;
+}
+
+.fleet-alert-chip--danger {
+  background: #fde8e6;
+  color: #e85347;
+}
+
+.fleet-alert-chip--warning {
+  background: #fff3cd;
+  color: #b78103;
+}
+
+.fleet-log-form {
+  max-width: 100%;
+}
+
+.fleet-distance-preview {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #364a63;
+  font-size: 1rem;
+}
+
+.fleet-mgmt-stat {
+  background: #f5f6fa;
+  border-radius: 10px;
+  padding: 14px 18px;
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.fleet-mgmt-stat .label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #8094ae;
+  font-weight: 600;
+}
+
+.fleet-mgmt-stat .value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #364a63;
+  line-height: 1.2;
+}
+
+/* Vehicle roster card (Vehicles & Team page) */
+.fleet-roster-card .card-inner {
+  padding: 16px;
+}
+
+.fleet-team-member {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f7;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 480px) {
+  .fleet-team-member {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fleet-team-member__label {
+    min-width: 72px;
+  }
+}
+
+.fleet-team-member__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.fleet-odo-block {
+  background: #fafbfc;
+  border: 1px solid #e5e9f2;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.fleet-odo-block .form-control {
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.fleet-driver-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fleet-driver-row select {
+  width: 100%;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+/* Log history — cards on small screens */
+.fleet-log-cards {
+  display: none;
+}
+
+.fleet-log-table-wrap {
+  display: block;
+}
+
+.fleet-history-cards {
+  display: none;
+}
+
+.fleet-history-table-wrap {
+  display: block;
+}
+
+.fleet-log-card-item {
+  border: 1px solid #e5e9f2;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.fleet-log-card-item__date {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.fleet-log-card-item__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: 2px 0;
+  color: #526484;
+}
+
+.fleet-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* ── Fleet roster page (Vehicles & Team) ─────────────────────────────────── */
+
+.fleet-date-toolbar__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fleet-date-toolbar__field {
+  flex: 1;
+  min-width: 0;
+}
+
+.fleet-date-toolbar__today {
+  align-self: flex-start;
+}
+
+.fleet-day-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.fleet-day-summary__item {
+  background: #fff;
+  border: 1px solid #e5e9f2;
+  border-radius: 12px;
+  padding: 14px 12px;
+  text-align: center;
+}
+
+.fleet-day-summary__item--highlight {
+  background: linear-gradient(135deg, #eef2ff 0%, #f0f4ff 100%);
+  border-color: #c4d0ff;
+}
+
+.fleet-day-summary__value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #364a63;
+  line-height: 1.2;
+}
+
+.fleet-day-summary__label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8094ae;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.fleet-vehicle-card-v2 {
+  border: 1px solid #e5e9f2;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+}
+
+.fleet-vehicle-card-v2__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f8f9fc;
+  border-left: 4px solid #6576ff;
+}
+
+.fleet-vehicle-card-v2__code {
+  display: inline-block;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: #fff;
+  margin-right: 10px;
+}
+
+.fleet-vehicle-card-v2__plate {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #364a63;
+}
+
+.fleet-vehicle-card-v2__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fleet-step-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #dbdfea;
+  color: #8094ae;
+}
+
+.fleet-step-pill--done {
+  background: #e6f8f3;
+  border-color: #1ee0ac;
+  color: #0d6832;
+}
+
+.fleet-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fleet-info-grid__item {
+  background: #f8f9fc;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.fleet-info-grid__label {
+  display: block;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8094ae;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.fleet-info-grid__value {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #364a63;
+  line-height: 1.35;
+}
+
+.fleet-driver-panel {
+  background: #f8f9fc;
+  border: 1px solid #e5e9f2;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.fleet-driver-panel__head {
+  margin-bottom: 10px;
+}
+
+.fleet-driver-panel__saved {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #364a63;
+  margin-top: 4px;
+}
+
+.fleet-driver-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.fleet-odo-block--done {
+  border-color: #b8f0dc;
+  background: #f6fffb;
+}
+
+.fleet-odo-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.fleet-odo-preview {
+  display: block;
+  margin-top: 8px;
+  max-height: 100px;
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.fleet-camera-btn--subtle {
+  background: #fff;
+  border-color: #dbdfea;
+  color: #526484;
+}
+
+.fleet-distance-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(135deg, #6576ff 0%, #816bff 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.fleet-distance-hero__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.fleet-distance-hero__value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.fleet-cleaning-layout .fleet-vehicle-card {
+  margin-bottom: 8px;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .fleet-subnav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .fleet-subnav__full {
+    display: none;
+  }
+
+  .fleet-subnav__short {
+    display: inline;
+  }
+
+  .fleet-subnav__link {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 8px;
+    font-size: 0.82rem;
+  }
+
+  .fleet-page-head .page-title,
+  .fleet-page-head .nk-block-title {
+    font-size: 1.35rem;
+    word-break: break-word;
+  }
+
+  .fleet-page-root .card-bordered {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .fleet-roster-card .card-inner {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .fleet-vehicle-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fleet-btn-block-mobile {
+    display: block;
+    width: 100%;
+  }
+
+  .fleet-log-table-wrap {
+    display: none;
+  }
+
+  .fleet-log-cards {
+    display: block;
+  }
+
+  .fleet-history-table-wrap {
+    display: none;
+  }
+
+  .fleet-history-cards {
+    display: block;
+  }
+
+  .fleet-page-head .btn-sm {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+
+  .fleet-mgmt-stat {
+    flex: 1 1 calc(50% - 5px);
+  }
+
+  .fleet-mgmt-stat .value {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 399px) {
+  .fleet-vehicle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .fleet-subnav {
+    flex-wrap: wrap;
+  }
+
+  .fleet-subnav__link {
+    flex: 0 0 auto;
+  }
+
+  .fleet-date-toolbar__inner {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .fleet-day-summary {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .fleet-driver-row {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .fleet-driver-row select,
+  .fleet-driver-select {
+    max-width: none;
+    flex: 1;
+  }
+
+  .fleet-driver-row .fleet-btn-block-mobile {
+    width: auto;
+    min-width: 150px;
+  }
+
+  .fleet-log-form {
+    max-width: 520px;
+  }
+
+  .fleet-touch-input[type="date"] {
+    max-width: 220px;
+  }
+}

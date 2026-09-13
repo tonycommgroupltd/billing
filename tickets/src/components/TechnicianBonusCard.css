@@ -1,0 +1,281 @@
+/**
+ * TechnicianBonusCard.css - Styles for bonus card component
+ */
+
+.bonus-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.bonus-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.bonus-card.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  color: #666;
+}
+
+/* Card Header */
+.bonus-card .card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-bottom: none;
+}
+
+.bonus-card .technician-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.bonus-card .technician-email {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* Card Content */
+.bonus-card .card-content {
+  padding: 20px;
+}
+
+.bonus-card .bonus-section {
+  margin-bottom: 20px;
+}
+
+.bonus-card .bonus-section h4 {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bonus-card .bonus-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Stat Rows */
+.bonus-card .stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.bonus-card .stat-row:last-child {
+  border-bottom: none;
+}
+
+.bonus-card .stat-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.bonus-card .stat-value {
+  color: #333;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.bonus-card .stat-value.earning {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.bonus-card .stat-value.paid {
+  color: #3498db;
+}
+
+.bonus-card .stat-value.owed {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.bonus-card .stat-value.settled {
+  color: #27ae60;
+}
+
+.bonus-card .stat-row.balance {
+  padding: 15px 0;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Messages */
+.bonus-card .info-message,
+.bonus-card .success-message {
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.bonus-card .info-message {
+  background: #e3f2fd;
+  color: #1565c0;
+  border-left: 4px solid #1565c0;
+}
+
+.bonus-card .success-message {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+/* Card Footer */
+.bonus-card .card-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  background: #f8f9fa;
+}
+
+.bonus-card .admin-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Buttons */
+.bonus-card .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bonus-card .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bonus-card .btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.bonus-card .btn-primary:hover:not(:disabled) {
+  background: #5568d3;
+  transform: translateY(-1px);
+}
+
+.bonus-card .btn-success {
+  background: #27ae60;
+  color: white;
+}
+
+.bonus-card .btn-success:hover:not(:disabled) {
+  background: #229954;
+  transform: translateY(-1px);
+}
+
+.bonus-card .btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+.bonus-card .btn-secondary:hover:not(:disabled) {
+  background: #7f8c8d;
+  transform: translateY(-1px);
+}
+
+.bonus-card .pay-bonus-btn {
+  width: 100%;
+}
+
+/* Payment Form */
+.bonus-card .payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bonus-card .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.bonus-card .form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bonus-card .form-group input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.bonus-card .form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.bonus-card .form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.bonus-card .form-actions .btn {
+  flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bonus-card {
+    margin-bottom: 15px;
+  }
+
+  .bonus-card .card-header {
+    padding: 15px;
+  }
+
+  .card-content {
+    padding: 15px;
+  }
+
+  .card-footer {
+    padding: 15px;
+  }
+
+  .stat-row {
+    padding: 10px 0;
+    font-size: 13px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}

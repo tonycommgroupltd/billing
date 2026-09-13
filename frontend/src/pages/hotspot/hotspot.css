@@ -1,0 +1,450 @@
+.hotspot-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.45rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e5e9f2;
+  border-radius: 0.8rem;
+  box-shadow: 0 0.125rem 0.75rem rgba(31, 43, 58, 0.04);
+}
+
+.hotspot-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: max-content;
+  padding: 0.55rem 0.9rem;
+  color: #526484;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: 0.55rem;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.hotspot-nav-link:hover {
+  color: #364a63;
+  background: #f3f6f9;
+}
+
+.hotspot-nav-link.active {
+  color: #fff;
+  background: linear-gradient(135deg, #364a63, #1f2f46);
+  box-shadow: 0 0.25rem 0.65rem rgba(31, 47, 70, 0.18);
+}
+
+.hotspot-hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(0, 196, 255, 0.28), transparent 32%),
+    linear-gradient(125deg, #15253d 0%, #273f61 55%, #086f9e 100%);
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 0.75rem 2rem rgba(21, 37, 61, 0.18);
+}
+
+.hotspot-hero::after {
+  position: absolute;
+  right: -5rem;
+  bottom: -7rem;
+  width: 18rem;
+  height: 18rem;
+  content: "";
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5rem rgba(255, 255, 255, 0.035), 0 0 0 5rem rgba(255, 255, 255, 0.025);
+}
+
+.hotspot-hero .card-body {
+  position: relative;
+  z-index: 1;
+  padding: 1.75rem 2rem;
+}
+
+.hotspot-hero-content {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hotspot-eyebrow {
+  margin-bottom: 0.35rem;
+  color: #9bdcf7;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hotspot-hero-title {
+  margin: 0;
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 700;
+}
+
+.hotspot-hero-copy {
+  margin: 0.4rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hotspot-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+.hotspot-health-badge {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.5rem 0.7rem;
+  font-weight: 600;
+}
+
+.hotspot-live-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.14);
+}
+
+.hotspot-loading-card {
+  border: 1px solid #e5e9f2;
+  border-radius: 0.85rem;
+}
+
+.hotspot-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.hotspot-section-title {
+  margin: 0;
+  color: #253854;
+  font-weight: 700;
+}
+
+.hotspot-stat-card {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e5e9f2;
+  border-radius: 0.85rem;
+  box-shadow: 0 0.35rem 1.25rem rgba(31, 43, 58, 0.05);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hotspot-stat-card:hover {
+  box-shadow: 0 0.75rem 1.75rem rgba(31, 43, 58, 0.09);
+  transform: translateY(-2px);
+}
+
+.hotspot-stat-card::before {
+  display: block;
+  width: 100%;
+  height: 3px;
+  content: "";
+  background: #6576ff;
+}
+
+.hotspot-stat-card-success::before { background: #1ee0ac; }
+.hotspot-stat-card-primary::before { background: #6576ff; }
+.hotspot-stat-card-warning::before { background: #f4bd0e; }
+.hotspot-stat-card-info::before { background: #09c2de; }
+
+.hotspot-stat-card .card-body {
+  padding: 1.2rem 1.25rem;
+}
+
+.hotspot-stat-copy {
+  min-width: 0;
+}
+
+.hotspot-stat-label {
+  margin-bottom: 0.35rem;
+  color: #8094ae;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.hotspot-stat-value {
+  overflow: hidden;
+  color: #253854;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hotspot-stat-hint {
+  margin-top: 0.35rem;
+  color: #8094ae;
+  font-size: 0.72rem;
+}
+
+.hotspot-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.65rem;
+  font-size: 1.25rem;
+}
+
+.hotspot-mini-stat {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 1px solid #e8edf4;
+  border-radius: 0.75rem;
+}
+
+.hotspot-mini-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.1rem;
+  background: #f5f7fa;
+  border-radius: 0.6rem;
+}
+
+.hotspot-mini-stat small,
+.hotspot-mini-stat strong {
+  display: block;
+}
+
+.hotspot-mini-stat small {
+  color: #8094ae;
+  font-size: 0.7rem;
+}
+
+.hotspot-mini-stat strong {
+  color: #253854;
+  font-size: 1rem;
+}
+
+.hotspot-panel-card {
+  height: 100%;
+  border: 1px solid #e5e9f2;
+  border-radius: 0.9rem;
+  box-shadow: 0 0.35rem 1.25rem rgba(31, 43, 58, 0.045);
+}
+
+.hotspot-panel-card .card-body {
+  padding: 1.35rem;
+}
+
+.hotspot-panel-head {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+}
+
+.hotspot-health-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: #0fac81;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #e6fcf5;
+  border-radius: 50%;
+}
+
+.hotspot-router-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.hotspot-router-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.hotspot-router-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 0.65rem;
+}
+
+.hotspot-router-icon.online {
+  color: #0fac81;
+  background: #e6fcf5;
+}
+
+.hotspot-router-icon.offline {
+  color: #8094ae;
+  background: #eef1f6;
+}
+
+.hotspot-router-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hotspot-router-copy > div,
+.hotspot-router-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hotspot-customer-cell {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  font-weight: 600;
+}
+
+.hotspot-customer-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: #6576ff;
+  background: #ebeefc;
+  border-radius: 50%;
+}
+
+.hotspot-receipt {
+  padding: 0.2rem 0.4rem;
+  color: #526484;
+  background: #f5f6fa;
+  border-radius: 0.3rem;
+}
+
+.hotspot-table th {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  color: #8094ae;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  background: #f8f9fc;
+  border-top: 1px solid #eef1f6;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.hotspot-table td {
+  vertical-align: middle;
+  border-color: #eef1f6;
+}
+
+.hotspot-empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+  color: #8094ae;
+  font-size: 0.85rem;
+}
+
+.hotspot-empty-state .icon {
+  font-size: 2rem;
+}
+
+.hotspot-log-view {
+  min-height: 24rem;
+  max-height: 60vh;
+  padding: 1rem;
+  overflow: auto;
+  color: #d9e2ec;
+  background: #101828;
+  border-radius: 0.6rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.hotspot-log-line {
+  padding: 0.1rem 0.35rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-left: 3px solid transparent;
+}
+
+.hotspot-log-line.error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.08);
+  border-left-color: #ef4444;
+}
+
+.hotspot-log-line.warn {
+  color: #fde68a;
+  border-left-color: #eab308;
+}
+
+@media (max-width: 575.98px) {
+  .hotspot-hero .card-body {
+    padding: 1.35rem;
+  }
+
+  .hotspot-hero-content {
+    align-items: flex-start;
+  }
+
+  .hotspot-hero-title {
+    font-size: 1.4rem;
+  }
+
+  .hotspot-hero-actions,
+  .hotspot-hero-actions .btn {
+    width: 100%;
+  }
+
+  .hotspot-hero-actions .btn {
+    justify-content: center;
+  }
+
+  .hotspot-stat-card .card-body {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hotspot-hero-content {
+    flex-direction: column;
+  }
+
+  .hotspot-hero-actions {
+    justify-content: flex-start;
+  }
+
+  .hotspot-panel-card .card-body {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,11 @@
+RewriteEngine On
+RewriteBase /
+
+# PHP endpoints apply the CORS policy through setCorsHeaders().
+# Defining the same headers here produces duplicate Access-Control-Allow-Origin
+# values after the API is reached through the VPS reverse proxy.
+
+# Route only non-existing files/dirs to index.php (OPTIONS included)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]

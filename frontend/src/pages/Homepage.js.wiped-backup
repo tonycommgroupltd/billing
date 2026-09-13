@@ -1,0 +1,445 @@
+import React, { useState, useEffect } from "react";
+import Head from "../layout/head/Head";
+import Content from "../layout/content/Content";
+import { Card, Collapse } from "reactstrap";
+import {
+  Block,
+  BlockHead,
+  BlockHeadContent,
+  BlockTitle,
+  Icon,
+  Row,
+  Col,
+} from "../components/Component";
+import { Link } from "react-router-dom";
+import { http } from '../helpers';
+import { socket } from '../socket';
+import { DocumentError24Regular } from "@fluentui/react-icons";
+import { connect } from 'react-redux';
+
+const Homepage = ({ user }) => {
+  const [data, setData] = useState([]);
+  const [cpuUsage, setCpuUsage] = useState(0);
+  const [iowait, setIowait] = useState(0);
+
+  const [isCpuOpen, setIsCpuOpen] = useState(true);
+  const toggleCpu = () => setIsCpuOpen(!isCpuOpen);
+
+  const [isNetOpen, setIsNetOpen] = useState(true);
+  const toggleNet = () => setIsNetOpen(!isNetOpen);
+
+  const [isLeadOpen, setIsLeadOpen] = useState(true);
+  const toggleLead = () => setIsLeadOpen(!isLeadOpen);
+
+  const [isCustOpen, setIsCustOpen] = useState(true);
+  const toggleCust = () => setIsCustOpen(!isCustOpen);
+
+  const [isFinOpen, setIsFinOpen] = useState(true);
+  const toggleFin = () => setIsFinOpen(!isFinOpen);
+
+  const [isTickOpen, setIsTickOpen] = useState(true);
+  const toggleTick = () => setIsTickOpen(!isTickOpen);
+
+  const { all_roles } = user;
+
+  useEffect(() => {
+    let mounted = true;
+    socket.connect();
+
+    const fetchDashboardStats = async () => {
+      try {
+        const response = await http.get(`${process.env.REACT_APP_API_URL}/dashboard-stats`);
+        if (mounted && response.data) {
+          setData(response.data);
+        }
+      } catch (error) {
+        /* ignore — leave last successful snapshot */
+      }
+    };
+
+    fetchDashboardStats();
+    const timer = setInterval(fetchDashboardStats, 10000);
+
+    const onNotification = (payload) => {
+      if (!mounted) return;
+      if (payload?.params?.[1] == "usage:::") {
+        setCpuUsage(payload.params[2]);
+        setIowait(payload.params[3]);
+      }
+    };
+    socket.on("notification", onNotification);
+
+    return () => {
+      mounted = false;
+      socket.off("notification", onNotification);
+      socket.disconnect();
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <React.Fragment>
+      <Head title="Dashboard"></Head>
+      <Content>
+        <BlockHead size="sm">
+          <BlockHeadContent>
+            <BlockTitle page tag="h3">
+              Dashboard
+            </BlockTitle>
+          </BlockHeadContent>
+        </BlockHead>
+        <Block>
+          <Row className="g-gs dashboard-top">
+            <Col md="4" className="dashboards-top-block-item">
+              <Card>
+                <div className="card-inner p-0">
+                  <div className="dashboards-top-block-item-title">
+                    <span className="icon-wrap">
+                      <Icon name="users" />
+                    </span>
+                    <span className="text">Online customers</span>
+                  </div>
+                  <div className="dashboards-top-block-item-bottom">
+                    <span className="view">View</span>
+                    <span id="dashboard_top_online" className="count">{data?.online_customers ?? 0}</span>
+                  </div>
+                  <Link to={`${process.env.PUBLIC_URL}/admin/customers/online`} className="dashboards-top-block-item-link-absolute action-click" />
+                </div>
+              </Card>
+            </Col>
+            <Col md="4" className="dashboards-top-block-item">
+              <Card>
+                <div className="card-inner dashboards-top-block-item p-0">
+                  <div className="dashboards-top-block-item-title">
+                    <span className="icon-wrap">
+                      <Icon name="user-add" />
+                    </span>
+                    <span className="text">New customers</span>
+                  </div>
+                  <div className="dashboards-top-block-item-bottom">
+                    <span className="view">View</span>
+                    <span id="dashboard_top_online" className="count">{data?.new_customers ?? 0}</span>
+                  </div>
+                  <Link to={`${process.env.PUBLIC_URL}/admin/customers/list?status=new`} className="dashboards-top-block-item-link-absolute action-click" />
+                </div>
+              </Card>
+            </Col>
+            <Col md="4" className="dashboards-top-block-item">
+              <Card>
+                <div className="card-inner dashboards-top-block-item p-0">
+                  <div className="dashboards-top-block-item-title">
+                    {/*<span className="icon-wrap">
+                      <Icon name="ticket" />
+                    </span>
+                    <span className="text">New & open tickets</span>*/}
+                    <span className="icon-wrap">
+                      <DocumentError24Regular />
+                    </span>
+                    <span className="text">Unpaid invoices</span>
+                  </div>
+                  <div className="dashboards-top-block-item-bottom">
+                    <span className="view">View</span>
+                    <span id="dashboard_top_online" className="count">{data?.this_month_unpaid_invoices ?? 0}</span>
+                  </div>
+                  <Link to={`${process.env.PUBLIC_URL}/admin/finance/invoices?status=1`} className="dashboards-top-block-item-link-absolute action-click" />
+                </div>
+              </Card>
+            </Col>
+          </Row>
+          <div className="shortcuts-wrap dashboard-shortcut mt-0 mb-24">
+            <strong className="heading"> Shortcuts </strong>
+            <div className="shortcuts-list">
+              <div className="shortcuts-button">
+                <Link to="/admin/customers/add" className="button-purple" title="Add customer">
+                  <span className="icon-wrap me-4">
+                    <Icon name="user-add" />
+                  </span>
+                  <span className="button-title"><span>Add customer</span></span>
+                </Link>
+              </div>
+              {(all_roles.includes("super-administrator") || all_roles.includes("administrator")) &&
+                <div className="shortcuts-button">
+                  <Link to="/admin/networking/routers/add" className="button-success" title="Add router">
+                    <span className="icon-wrap me-4">
+                      <Icon name="network" />
+                    </span>
+                    <span className="button-title"><span>Add router</span>
+                    </span>
+                  </Link>
+                </div>}
+            </div>
+          </div>
+          <Row className="g-gs">
+            <Col sm="6">
+              {(all_roles.includes("super-administrator") || all_roles.includes("administrator")) ?
+                <>
+                  <Card className="dashboard-status spl-collapsed-panel">
+                    <div className="card-header dropup" onClick={toggleCpu}>
+                      <span className="icon-wrap">
+                        <Icon name="server" />
+                      </span>
+                      <strong>System status</strong>
+                      <div className="pull-right">
+                        <span className="close-card-btn icon-wrap">
+                          {isCpuOpen ? <Icon name="downward-ios" /> : <Icon name="upword-ios" />}
+                        </span>
+                      </div>
+                    </div>
+                    <Collapse isOpen={isCpuOpen}>
+                      <div className="card-body">
+                        <ul className="list-group list-group-striped">
+                          <li className="list-group-item"> CPU cores
+                            <span className="list-group-item-value">{data?.server?.cores ?? 0}</span>
+                          </li>
+                          <li className="list-group-item"> Load average (1,5,15 min)
+                            <span id="dashboard_status_load_average" className="list-group-item-value">{data?.server?.load_average ?? 0}</span>
+                          </li>
+                          <li className="list-group-item"> CPU usage
+                            <div className="progressBarHolder">
+                              <div id="dashboard_status_cpu_usage_progress" className="progress progress-free">
+                                <div role="progressbar" className="progress-bar bg-warning" style={{ width: cpuUsage + '%' }}>
+                                  <span id="dashboard_status_cpu_usage" className="progress-value">{cpuUsage} %</span>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li className="list-group-item"> Memory: {data?.server?.memory?.total ?? 0} (Free {data?.server?.memory?.percent ?? 0} %)
+                            <div className="progressBarHolder">
+                              <div id="dashboard_status_memory_progress" className="progress">
+                                <div title={data?.server?.memory?.used ?? 0} role="progressbar" className="progress-bar bg-warning" style={{ width: (100 - data?.server?.memory?.percent ?? 0) + '%' }}>
+                                  <span className="progress-value">Used</span>
+                                </div>
+                                <div title={data?.server?.memory?.free ?? 0} role="progressbar" className="progress-bar bg-success" style={{ width: (data?.server?.memory?.percent ?? 0) + '%' }}>
+                                  <span className="progress-value">Free</span>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li className="list-group-item"> I/O wait
+                            <div className="progressBarHolder">
+                              <div id="dashboard_status_iowait_progress" className="progress progress-free">
+                                <div role="progressbar" className="progress-bar bg-warning" style={{ width: iowait + '%' }}>
+                                  <span id="dashboard_status_iowait" className="progress-value">{iowait} %</span>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          {data?.server?.swap?.total ?
+                            <li className="list-group-item"> Swap: {data?.server?.swap?.total ?? 0} (Free {data?.server?.swap?.percent ?? 0} %)
+                              <div className="progressBarHolder">
+                                <div id="dashboard_status_swap_progress" className="progress">
+                                  <div title={data?.server?.swap?.used} role="progressbar" className="progress-bar bg-warning" style={{ width: (100 - data?.server?.swap?.percent ?? 0) + '%' }}>
+                                    <span className="progress-value">Used</span>
+                                  </div>
+                                  <div title={data?.server?.swap?.free} role="progressbar" className="progress-bar bg-success" style={{ width: (data?.server?.swap?.percent ?? 0) + '%' }}>
+                                    <span className="progress-value">Free</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </li> : null}
+                          <li className="list-group-item"> Disk: {data?.server?.disk?.total ?? 0} (Free {data?.server?.disk?.percent ?? 0} %)
+                            <div className="progressBarHolder">
+                              <div className="progress">
+                                <div role="progressbar" className="progress-bar bg-warning" style={{ width: (100 - data?.server?.disk?.percent ?? 0) + '%' }}>
+                                  <span className="progress-value">Used</span>
+                                </div>
+                                <div role="progressbar" className="progress-bar bg-success" style={{ width: (data?.server?.disk?.percent ?? 0) + '%' }}>
+                                  <span className="progress-value">Free</span>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li className="list-group-item"> Last DB backup
+                            <span className="list-group-item-value" style={data?.server?.backup_time ? {} : { color: 'red', fontWeight: 'bold' }}>
+                              <time className="timeago" title={data?.server?.backup_time ?? 'Never'}>{data?.server?.backup_time_ago ?? 'Never'}</time>  {data?.server?.backup_time ? '(' + (data?.server?.backup_size + ')' ?? '') : ''}
+                            </span>
+                          </li>
+                          <li className="list-group-item"> Last remote backup
+                            <span className="list-group-item-value" style={data?.server?.remote_backup_time ? {} : { color: 'red', fontWeight: 'bold' }}>
+                              <time className="timeago" title={data?.server?.remote_backup_time ?? 'Never'}>{data?.server?.remote_backup_time_ago ?? 'Never'}</time>  {data?.server?.remote_backup_time ? '(' + (data?.server?.remote_backup_size + ')' ?? '') : ''}
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </Collapse>
+                  </Card>
+                  <Card className="dashboard-status spl-collapsed-panel">
+                    <div className="card-header dropup" onClick={toggleNet}>
+                      <span className="icon-wrap color-success">
+                        <Icon name="network" />
+                      </span>
+                      <strong>Networking</strong>
+                      <div className="pull-right">
+                        <span className="close-card-btn icon-wrap">
+                          {isNetOpen ? <Icon name="downward-ios" /> : <Icon name="upword-ios" />}
+                        </span>
+                      </div>
+                    </div>
+                    <Collapse isOpen={isNetOpen}>
+                      <div className="card-body">
+                        <ul className="list-group list-group-striped">
+                          <li className="list-group-item"> Routers
+                            <span id="admin_dashboard_panels_networking_routers" className="list-group-item-value">{data?.all_routers ?? 0}</span>
+                          </li>
+                          <li className="list-group-item"> Monitoring devices
+                            <span id="admin_dashboard_panels_networking_monitoring" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Devices down (SNMP)
+                            <span id="admin_dashboard_panels_networking_monitoring_snmp" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Devices down (Ping)
+                            <span id="admin_dashboard_panels_networking_monitoring_ping" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> IPv4 networks
+                            <span id="admin_dashboard_panels_networking_networks" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Total private addresses
+                            <span id="admin_dashboard_panels_networking_private_total" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Private addresses used
+                            <span id="admin_dashboard_panels_networking_private_used" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Total public addresses
+                            <span id="admin_dashboard_panels_networking_public_total" className="list-group-item-value">0</span>
+                          </li>
+                          <li className="list-group-item"> Public addresses used
+                            <span id="admin_dashboard_panels_networking_public_used" className="list-group-item-value">0</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </Collapse>
+                  </Card>
+                </> :
+                <Card className="dashboard-status spl-collapsed-panel">
+                  <div className="card-header dropup" onClick={toggleCust}>
+                    <span className="icon-wrap color-purple">
+                      <Icon name="users" />
+                    </span>
+                    <strong>Customers</strong>
+                    <div className="pull-right">
+                      <span className="close-card-btn icon-wrap">
+                        {isCustOpen ? <Icon name="downward-ios" /> : <Icon name="upword-ios" />}
+                      </span>
+                    </div>
+                  </div>
+                  <Collapse isOpen={isCustOpen}>
+                    <div className="card-body">
+                      <ul className="list-group list-group-striped">
+                        <li className="list-group-item"> Total <span id="admin_dashboard_panels_customers_total"
+                          className="list-group-item-value">{data?.all_customers ?? 0}</span></li>
+                        <li className="list-group-item"> New <span id="admin_dashboard_panels_customers_new"
+                          className="list-group-item-value">{data?.new_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Active <span id="admin_dashboard_panels_customers_active"
+                          className="list-group-item-value">{data?.active_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Online <span id="admin_dashboard_panels_customers_online"
+                          className="list-group-item-value">{data?.online_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Online today <span id="admin_dashboard_panels_customers_onlineToday"
+                          className="list-group-item-value">{data?.online_today_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Blocked <span id="admin_dashboard_panels_customers_blocked"
+                          className="list-group-item-value">{data?.blocked_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Inactive <span id="admin_dashboard_panels_customers_disabled"
+                          className="list-group-item-value">{data?.inactive_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Added last month <span id="admin_dashboard_panels_customers_forMonth"
+                          className="list-group-item-value">{data?.last_month_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Added last year <span id="admin_dashboard_panels_customers_forYear"
+                          className="list-group-item-value">{data?.last_year_customers ?? 0}</span></li>
+                      </ul>
+                    </div>
+                  </Collapse>
+                </Card>
+              }
+            </Col>
+            <Col sm="6">
+              {(all_roles.includes("super-administrator") || all_roles.includes("administrator")) &&
+                <Card className="dashboard-status spl-collapsed-panel">
+                  <div className="card-header dropup" onClick={toggleCust}>
+                    <span className="icon-wrap color-purple">
+                      <Icon name="users" />
+                    </span>
+                    <strong>Customers</strong>
+                    <div className="pull-right">
+                      <span className="close-card-btn icon-wrap">
+                        {isCustOpen ? <Icon name="downward-ios" /> : <Icon name="upword-ios" />}
+                      </span>
+                    </div>
+                  </div>
+                  <Collapse isOpen={isCustOpen}>
+                    <div className="card-body">
+                      <ul className="list-group list-group-striped">
+                        <li className="list-group-item"> Total <span id="admin_dashboard_panels_customers_total"
+                          className="list-group-item-value">{data?.all_customers ?? 0}</span></li>
+                        <li className="list-group-item"> New <span id="admin_dashboard_panels_customers_new"
+                          className="list-group-item-value">{data?.new_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Active <span id="admin_dashboard_panels_customers_active"
+                          className="list-group-item-value">{data?.active_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Online <span id="admin_dashboard_panels_customers_online"
+                          className="list-group-item-value">{data?.online_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Online today <span id="admin_dashboard_panels_customers_onlineToday"
+                          className="list-group-item-value">{data?.online_today_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Blocked <span id="admin_dashboard_panels_customers_blocked"
+                          className="list-group-item-value">{data?.blocked_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Inactive <span id="admin_dashboard_panels_customers_disabled"
+                          className="list-group-item-value">{data?.inactive_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Added last month <span id="admin_dashboard_panels_customers_forMonth"
+                          className="list-group-item-value">{data?.last_month_customers ?? 0}</span></li>
+                        <li className="list-group-item"> Added last year <span id="admin_dashboard_panels_customers_forYear"
+                          className="list-group-item-value">{data?.last_year_customers ?? 0}</span></li>
+                      </ul>
+                    </div>
+                  </Collapse>
+                </Card>
+              }
+              {(all_roles.includes("super-administrator") || all_roles.includes("administrator") || all_roles.includes("financial-manager")) &&
+                <Card className="dashboard-status spl-collapsed-panel">
+                  <div className="card-header dropup" onClick={toggleFin}>
+                    <span className="icon-wrap color-purple">
+                      <Icon name="wallet" />
+                    </span>
+                    <strong>Finance</strong>
+                    <div className="pull-right">
+                      <span className="close-card-btn icon-wrap">
+                        {isFinOpen ? <Icon name="downward-ios" /> : <Icon name="upword-ios" />}
+                      </span>
+                    </div>
+                  </div>
+                  <Collapse isOpen={isFinOpen}>
+                    <div className="card-body">
+                      <ul className="list-group list-group-striped">
+                        <li className="list-group-item list-group-item-heading color-success"> Current month </li>
+                        <li className="list-group-item"> Payments <span id="admin_dashboard_panels_finance_current_payments"
+                          className="list-group-item-value">{data?.this_month_payments ?? 0} ({data?.sum_this_month_payments ?? '0.00'}&nbsp;Sh)</span></li>
+                        <li className="list-group-item"> Paid invoices <span id="admin_dashboard_panels_finance_current_paid_invoices"
+                          className="list-group-item-value">{data?.this_month_paid_invoices ?? 0} ({data?.this_month_paid_invoices_sum ?? 0.00}&nbsp;Sh)</span></li>
+                        <li className="list-group-item"> Unpaid invoices <span
+                          id="admin_dashboard_panels_finance_current_unpaid_invoices" className="list-group-item-value">{data?.this_month_unpaid_invoices ?? 0} ({data?.this_month_unpaid_invoices_sum ?? 0.00}&nbsp;Sh)</span></li>
+                        {/*<li className="list-group-item"> Credit notes <span id="admin_dashboard_panels_finance_current_credit_notes"
+                        className="list-group-item-value">0 (0.00&nbsp;Sh)</span></li>*/}
+                      </ul>
+                      <ul className="list-group list-group-striped">
+                        <li className="list-group-item list-group-item-heading color-warning"> Last month </li>
+                        <li className="list-group-item"> Payments <span id="admin_dashboard_panels_finance_last_payments"
+                          className="list-group-item-value">{data?.last_month_payments ?? 0} ({data?.sum_last_month_payments ?? '0.00'}&nbsp;Sh)</span></li>
+                        <li className="list-group-item"> Paid invoices <span id="admin_dashboard_panels_finance_last_paid_invoices"
+                          className="list-group-item-value">{data?.last_month_paid_invoices ?? 0} ({data?.last_month_paid_invoices_sum ?? 0.00}&nbsp;Sh)</span></li>
+                        <li className="list-group-item"> Unpaid invoices <span id="admin_dashboard_panels_finance_last_unpaid_invoices"
+                          className="list-group-item-value">{data?.last_month_unpaid_invoices ?? 0} ({data?.last_month_unpaid_invoices_sum ?? 0.00}&nbsp;Sh)</span></li>
+                        {/*<li className="list-group-item"> Credit notes <span id="admin_dashboard_panels_finance_last_credit_notes"
+                        className="list-group-item-value">0 (0.00&nbsp;Sh)</span></li>*/}
+                      </ul>
+                    </div>
+                  </Collapse>
+                </Card>
+              }
+            </Col>
+          </Row>
+        </Block>
+      </Content>
+    </React.Fragment >
+  );
+};
+
+const mapStateToProps = (state) => ({
+  user: state.auth.currentUser
+});
+
+export default connect(mapStateToProps)(Homepage);

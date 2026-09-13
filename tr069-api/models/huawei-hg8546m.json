@@ -1,0 +1,75 @@
+{
+  "productClass": "HG8546M",
+  "manufacturer": "Huawei Technologies Co., Ltd",
+  "dataModel": "InternetGatewayDevice",
+  "notes": "Inform-first remote ops. No STUN on this model. Connection request optional only.",
+  "parameters": {
+    "wifi": {
+      "ssid": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID",
+      "password": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PreSharedKey.1.KeyPassphrase",
+      "enable": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable",
+      "beaconType": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType",
+      "channel": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel",
+      "status": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Status",
+      "standard": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Standard"
+    },
+    "wlan2": {
+      "ssid": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.SSID",
+      "password": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.PreSharedKey.1.KeyPassphrase",
+      "enable": "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Enable"
+    },
+    "wlan": {
+      "root": "InternetGatewayDevice.LANDevice.1.WLANConfiguration"
+    },
+    "pppoe": {
+      "username": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Username",
+      "password": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Password",
+      "enable": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Enable",
+      "connectionStatus": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.ConnectionStatus",
+      "externalIp": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.ExternalIPAddress",
+      "mac": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.MACAddress",
+      "uptime": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Uptime",
+      "connectionType": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.ConnectionType"
+    },
+    "wan": {
+      "root": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice"
+    },
+    "device": {
+      "serial": "InternetGatewayDevice.DeviceInfo.SerialNumber",
+      "model": "InternetGatewayDevice.DeviceInfo.ModelName",
+      "software": "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
+      "uptime": "InternetGatewayDevice.DeviceInfo.UpTime"
+    },
+    "management": {
+      "acsUrl": "InternetGatewayDevice.ManagementServer.URL",
+      "informInterval": "InternetGatewayDevice.ManagementServer.PeriodicInformInterval",
+      "connectionRequestUrl": "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"
+    },
+    "hosts": {
+      "root": "InternetGatewayDevice.LANDevice.1.Hosts.Host"
+    },
+    "optical": {
+      "rxPower": "InternetGatewayDevice.WANDevice.1.X_GponInterafceConfig.RXPower",
+      "txPower": "InternetGatewayDevice.WANDevice.1.X_GponInterafceConfig.TXPower",
+      "rxPowerAlt": "InternetGatewayDevice.WANDevice.1.X_GponInterfaceConfig.RXPower",
+      "txPowerAlt": "InternetGatewayDevice.WANDevice.1.X_GponInterfaceConfig.TXPower"
+    },
+    "lanPorts": {
+      "root": "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig",
+      "portCount": 4
+    }
+  },
+  "remoteActions": {
+    "setWifi": true,
+    "setPppoe": true,
+    "reboot": true,
+    "readHosts": true,
+    "readOptical": "maybe",
+    "firmwareUpgrade": true,
+    "factoryReset": "test_before_use",
+    "instantConnectionRequest": false
+  },
+  "wifiDefaults": {
+    "beaconTypeWhenWpa2": "WPAand11i"
+  }
+}
