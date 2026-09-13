@@ -9,9 +9,9 @@ const mysql = require('mysql2/promise');
 const localPool = mysql.createPool({
   host:     process.env.LOCAL_DB_HOST  || '127.0.0.1',
   port:     process.env.LOCAL_DB_PORT  || 3306,
-  user:     process.env.LOCAL_DB_USER  || 'root',
+  user:     process.env.LOCAL_DB_USER  || '',
   password: process.env.LOCAL_DB_PASSWORD || '',
-  database: process.env.LOCAL_DB_NAME  || 'tcom_app',
+  database: process.env.LOCAL_DB_NAME  || '',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -22,9 +22,9 @@ const localPool = mysql.createPool({
 const remotePool = mysql.createPool({
   host:     process.env.REMOTE_DB_HOST || 'YOUR_VPS_IP',
   port:     process.env.REMOTE_DB_PORT || 3306,
-  user:     process.env.REMOTE_DB_USER || 'Joram',
+  user:     process.env.REMOTE_DB_USER || '',
   password: process.env.REMOTE_DB_PASSWORD || '',
-  database: process.env.REMOTE_DB_NAME || 'tonycomm',
+  database: process.env.REMOTE_DB_NAME || '',
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
@@ -35,7 +35,7 @@ const remotePool = mysql.createPool({
 const kraPool = mysql.createPool({
   host:     process.env.KRA_DB_HOST || process.env.LOCAL_DB_HOST || '127.0.0.1',
   port:     process.env.KRA_DB_PORT || process.env.LOCAL_DB_PORT || 3306,
-  user:     process.env.KRA_DB_USER || process.env.LOCAL_DB_USER || 'root',
+  user:     process.env.KRA_DB_USER || process.env.LOCAL_DB_USER || '',
   password: process.env.KRA_DB_PASSWORD || process.env.LOCAL_DB_PASSWORD || '',
   database: process.env.KRA_DB_NAME || 'tcom_kra',
   waitForConnections: true,
