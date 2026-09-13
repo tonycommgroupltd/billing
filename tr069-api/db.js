@@ -1,9 +1,9 @@
 const mysql = require('mysql2/promise');
 
 const remotePool = mysql.createPool({
-  host: process.env.REMOTE_DB_HOST || '100.42.182.120',
+  host: process.env.REMOTE_DB_HOST || '',
   port: Number(process.env.REMOTE_DB_PORT || 3306),
-  user: process.env.REMOTE_DB_USER || 'Joram',
+  user: process.env.REMOTE_DB_USER || '',
   password: process.env.REMOTE_DB_PASSWORD || '',
   database: process.env.REMOTE_DB_NAME || 'tonycomm',
   waitForConnections: true,
